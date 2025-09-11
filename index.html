@@ -4,263 +4,445 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Amandla Listening Session</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      /* Color variables based on the image */
       :root {
-        --dark-blue: #1a2238;
-        --purple: #9d4edd;
-        --light-purple: #c77dff;
-        --pink: #ff5c8a;
-        --light-pink: #ffc2d4;
-        --white: #ffffff;
+        --beige: #f5f5dc;
+        --dark-beige: #e6e6ce;
+        --light-beige: #fdfdf6;
+        --accent: #a67b5b;
+        --dark-accent: #8b5a2b;
+        --text: #333333;
+        --light-text: #666666;
       }
 
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: "Montserrat", sans-serif;
       }
 
       body {
-        background-color: var(--dark-blue);
-        color: var(--white);
+        font-family: "Montserrat", sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--light-beige) 0%,
+          var(--beige) 100%
+        );
+        color: var(--text);
         line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
       }
 
       .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
+        max-width: 1000px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: fadeIn 1s ease-out;
       }
 
-      /* Header styles */
       header {
-        padding: 40px 0;
         text-align: center;
+        padding: 2.5rem 2rem;
+        background: linear-gradient(to right, var(--beige), var(--dark-beige));
+        position: relative;
       }
 
       .logo {
-        max-width: 200px;
-        margin: 0 auto 20px;
-        display: block;
-      }
-
-      /* Hero section */
-      .hero {
-        text-align: center;
-        padding: 60px 0;
-        background: linear-gradient(
-          135deg,
-          var(--dark-blue) 0%,
-          var(--purple) 100%
-        );
-        border-radius: 10px;
-        margin: 20px;
-      }
-
-      .hero h1 {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1.5rem;
+        background: var(--accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
         font-size: 2.5rem;
-        margin-bottom: 20px;
-        color: var(--light-pink);
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        animation: pulse 2s infinite;
+        box-shadow: 0 5px 15px rgba(166, 123, 91, 0.3);
       }
 
-      .hero p {
+      .logo i {
+        transform: rotate(-10deg);
+      }
+
+      h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+        color: var(--dark-accent);
+        animation: slideDown 1s ease-out;
+      }
+
+      .subtitle {
         font-size: 1.2rem;
-        margin-bottom: 10px;
+        color: var(--light-text);
+        margin-bottom: 1.5rem;
+        animation: slideUp 1s ease-out;
       }
 
-      .highlight {
-        color: var(--light-purple);
-        font-weight: bold;
+      .divider {
+        height: 3px;
+        width: 80px;
+        background: var(--accent);
+        margin: 0 auto 1.5rem;
+        border-radius: 3px;
+        animation: expand 1.5s ease-out;
       }
 
-      /* Info section */
-      .info {
-        background-color: rgba(255, 255, 255, 0.05);
-        padding: 30px;
+      .content {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 2rem;
+      }
+
+      .info-section {
+        flex: 1;
+        min-width: 300px;
+        padding: 1.5rem;
+        animation: fadeInLeft 1s ease-out;
+      }
+
+      .info-card {
+        background: white;
         border-radius: 10px;
-        margin: 30px 20px;
-        text-align: center;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        transition: transform 0.3s ease;
+      }
+
+      .info-card:hover {
+        transform: translateY(-5px);
       }
 
       .info-item {
-        margin-bottom: 15px;
-        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: flex-start;
       }
 
-      /* RSVP form */
-      .rsvp {
-        background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
-        padding: 40px;
+      .info-item i {
+        font-size: 1.5rem;
+        color: var(--accent);
+        margin-right: 1rem;
+        min-width: 30px;
+      }
+
+      .info-text h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+        color: var(--dark-accent);
+      }
+
+      .info-text p {
+        color: var(--light-text);
+      }
+
+      .rsvp-section {
+        flex: 1;
+        min-width: 300px;
+        padding: 1.5rem;
+        animation: fadeInRight 1s ease-out;
+      }
+
+      .rsvp-form {
+        background: white;
         border-radius: 10px;
-        margin: 40px 20px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       }
 
-      .rsvp h2 {
+      .rsvp-form h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--dark-accent);
         text-align: center;
-        margin-bottom: 30px;
-        color: var(--white);
       }
 
       .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 1.5rem;
       }
 
       .form-group label {
         display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text);
       }
 
-      .form-group input {
+      .form-group input,
+      .form-group select {
         width: 100%;
-        padding: 12px;
-        border: none;
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.9);
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(166, 123, 91, 0.2);
       }
 
       button {
-        background-color: var(--dark-blue);
-        color: var(--white);
+        width: 100%;
+        padding: 14px;
+        background: var(--accent);
+        color: white;
         border: none;
-        padding: 12px 30px;
-        border-radius: 5px;
+        border-radius: 8px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 500;
         cursor: pointer;
-        font-size: 1rem;
-        font-weight: bold;
-        display: block;
-        margin: 0 auto;
-        transition: background-color 0.3s;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(166, 123, 91, 0.3);
       }
 
       button:hover {
-        background-color: var(--light-purple);
+        background: var(--dark-accent);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(166, 123, 91, 0.4);
       }
 
-      /* Footer */
       footer {
         text-align: center;
-        padding: 30px 0;
-        color: var(--light-pink);
+        padding: 2rem;
+        color: var(--light-text);
         font-size: 0.9rem;
+        animation: fadeIn 2s ease-out;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes expand {
+        from {
+          width: 0;
+        }
+        to {
+          width: 80px;
+        }
+      }
+
+      @keyframes fadeInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
 
       /* Responsive design */
-      @media (min-width: 768px) {
+      @media (max-width: 768px) {
         .content {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
+          flex-direction: column;
         }
 
-        .info {
-          width: 48%;
+        h1 {
+          font-size: 2.2rem;
         }
 
-        .rsvp {
-          width: 48%;
-        }
-      }
-
-      @media (min-width: 1024px) {
-        .hero h1 {
-          font-size: 3.5rem;
+        .info-section,
+        .rsvp-section {
+          min-width: 100%;
         }
       }
     </style>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body>
     <div class="container">
       <header>
-        <!-- Logo placeholder -->
         <div class="logo">
-          <svg viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
-            <text
-              x="0"
-              y="30"
-              font-family="Montserrat"
-              font-weight="700"
-              font-size="24"
-              fill="#ff5c8a"
-            >
-              Lolli Native
-            </text>
-          </svg>
+          <i class="fas fa-headphones"></i>
         </div>
+        <h1>Amandla Listening Session</h1>
+        <p class="subtitle">
+          Lolli Native invites you to an exclusive album experience
+        </p>
+        <div class="divider"></div>
       </header>
 
-      <section class="hero">
-        <h1>Amandla Listening Session</h1>
-        <p>
-          <span class="highlight">Lolli Native</span> invites you to an
-          exclusive album experience
-        </p>
-      </section>
-
       <div class="content">
-        <section class="info">
-          <div class="info-item">
-            <h2>Venue</h2>
-            <p>Dia Studios Hydepark</p>
-          </div>
-          <div class="info-item">
-            <h2>Date</h2>
-            <p>18 July 2025</p>
-          </div>
-          <div class="info-item">
-            <h2>Time</h2>
-            <p>18:00 for 19:00 hours</p>
+        <section class="info-section">
+          <div class="info-card">
+            <div class="info-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <div class="info-text">
+                <h3>Venue</h3>
+                <p>Dia Studios Hydepark</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fas fa-calendar-alt"></i>
+              <div class="info-text">
+                <h3>Date</h3>
+                <p>18 July 2025</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fas fa-clock"></i>
+              <div class="info-text">
+                <h3>Time</h3>
+                <p>18:00 for 19:00 hours</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fas fa-music"></i>
+              <div class="info-text">
+                <h3>Special Guest</h3>
+                <p>Live Q&A with the artist</p>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section class="rsvp">
-          <h2>RSVP</h2>
-          <form id="rsvp-form">
-            <div class="form-group">
-              <label for="name">Full Name</label>
-              <input type="text" id="name" name="name" required />
-            </div>
-            <div class="form-group">
-              <label for="email">Email Address</label>
-              <input type="email" id="email" name="email" required />
-            </div>
-            <div class="form-group">
-              <label for="guests">Number of Guests</label>
-              <input
-                type="number"
-                id="guests"
-                name="guests"
-                min="1"
-                max="5"
-                required
-              />
-            </div>
-            <button type="submit">Confirm Attendance</button>
-          </form>
+        <section class="rsvp-section">
+          <div class="rsvp-form">
+            <h2>RSVP</h2>
+
+            <form id="rsvpForm">
+              <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required />
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required />
+              </div>
+
+              <div class="form-group">
+                <label for="guests">Number of Guests</label>
+                <select id="guests" name="guests" required>
+                  <option value="">Select...</option>
+                  <option value="1">1 Person</option>
+                  <option value="2">2 People</option>
+                  <option value="3">3 People</option>
+                  <option value="4">4 People</option>
+                </select>
+              </div>
+
+              <button type="submit">Confirm Attendance</button>
+            </form>
+          </div>
         </section>
       </div>
 
       <footer>
-        <p>&copy; 2025 Lolli Native. All rights reserved.</p>
+        <p>© 2025 Lolli Native · All rights reserved</p>
       </footer>
     </div>
 
     <script>
       document
-        .getElementById("rsvp-form")
+        .getElementById("rsvpForm")
         .addEventListener("submit", function (e) {
           e.preventDefault();
-          alert(
-            "Thank you for your RSVP! We look forward to seeing you at the listening session."
-          );
-          this.reset();
+
+          // Simple form validation
+          const name = document.getElementById("name").value;
+          const email = document.getElementById("email").value;
+          const guests = document.getElementById("guests").value;
+
+          if (!name || !email || !guests) {
+            alert("Please fill in all fields");
+            return;
+          }
+
+          // Simulate form submission
+          const button = this.querySelector("button");
+          button.innerHTML = "Sending...";
+          button.disabled = true;
+
+          setTimeout(() => {
+            alert(
+              "Thank you for your RSVP! We look forward to seeing you at the listening session."
+            );
+            this.reset();
+            button.innerHTML = "Confirm Attendance";
+            button.disabled = false;
+          }, 1500);
         });
     </script>
   </body>
