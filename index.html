@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amandla Listening Session</title>
+    <style>
+      /* Color variables based on the image */
+      :root {
+        --dark-blue: #1a2238;
+        --purple: #9d4edd;
+        --light-purple: #c77dff;
+        --pink: #ff5c8a;
+        --light-pink: #ffc2d4;
+        --white: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      body {
+        background-color: var(--dark-blue);
+        color: var(--white);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header styles */
+      header {
+        padding: 40px 0;
+        text-align: center;
+      }
+
+      .logo {
+        max-width: 200px;
+        margin: 0 auto 20px;
+        display: block;
+      }
+
+      /* Hero section */
+      .hero {
+        text-align: center;
+        padding: 60px 0;
+        background: linear-gradient(
+          135deg,
+          var(--dark-blue) 0%,
+          var(--purple) 100%
+        );
+        border-radius: 10px;
+        margin: 20px;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: var(--light-pink);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+      }
+
+      .highlight {
+        color: var(--light-purple);
+        font-weight: bold;
+      }
+
+      /* Info section */
+      .info {
+        background-color: rgba(255, 255, 255, 0.05);
+        padding: 30px;
+        border-radius: 10px;
+        margin: 30px 20px;
+        text-align: center;
+      }
+
+      .info-item {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+      }
+
+      /* RSVP form */
+      .rsvp {
+        background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+        padding: 40px;
+        border-radius: 10px;
+        margin: 40px 20px;
+      }
+
+      .rsvp h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--white);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+
+      button {
+        background-color: var(--dark-blue);
+        color: var(--white);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+        display: block;
+        margin: 0 auto;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: var(--light-purple);
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 30px 0;
+        color: var(--light-pink);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive design */
+      @media (min-width: 768px) {
+        .content {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+        }
+
+        .info {
+          width: 48%;
+        }
+
+        .rsvp {
+          width: 48%;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .hero h1 {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <!-- Logo placeholder -->
+        <div class="logo">
+          <svg viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+            <text
+              x="0"
+              y="30"
+              font-family="Montserrat"
+              font-weight="700"
+              font-size="24"
+              fill="#ff5c8a"
+            >
+              Lolli Native
+            </text>
+          </svg>
+        </div>
+      </header>
+
+      <section class="hero">
+        <h1>Amandla Listening Session</h1>
+        <p>
+          <span class="highlight">Lolli Native</span> invites you to an
+          exclusive album experience
+        </p>
+      </section>
+
+      <div class="content">
+        <section class="info">
+          <div class="info-item">
+            <h2>Venue</h2>
+            <p>Dia Studios Hydepark</p>
+          </div>
+          <div class="info-item">
+            <h2>Date</h2>
+            <p>18 July 2025</p>
+          </div>
+          <div class="info-item">
+            <h2>Time</h2>
+            <p>18:00 for 19:00 hours</p>
+          </div>
+        </section>
+
+        <section class="rsvp">
+          <h2>RSVP</h2>
+          <form id="rsvp-form">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+            <div class="form-group">
+              <label for="guests">Number of Guests</label>
+              <input
+                type="number"
+                id="guests"
+                name="guests"
+                min="1"
+                max="5"
+                required
+              />
+            </div>
+            <button type="submit">Confirm Attendance</button>
+          </form>
+        </section>
+      </div>
+
+      <footer>
+        <p>&copy; 2025 Lolli Native. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      document
+        .getElementById("rsvp-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert(
+            "Thank you for your RSVP! We look forward to seeing you at the listening session."
+          );
+          this.reset();
+        });
+    </script>
+  </body>
+</html>
