@@ -3,1019 +3,887 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amandla Listening Session</title>
+    <title>Album Listening Session — RSVP</title>
 
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/images/vinyl.png" type="image/png" />
+
+    <!-- Icons & Fonts -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Bebas+Neue&display=swap"
       rel="stylesheet"
     />
+
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
       :root {
-        --primary: #f4ebe2; /* your primary */
-        --secondary: #e6d4c2; /* your secondary */
-        --ink: #2b2622; /* text */
-        --muted: #6f675f; /* subtext */
-        --card: #ffffff; /* surfaces */
-        --ring: rgba(230, 212, 194, 0.7);
-        --shadow: rgba(0, 0, 0, 0.1);
-        --accent-dark: #3c342f;
-        --ok: #1b8f4a;
+        /* Backie-adjacent palette: navy / white / black + a touch of gold */
+        --bg: #0b0e14; /* deep navy */
+        --bg-2: #0f1421; /* darker navy */
+        --ink: #eaeaea; /* off-white */
+        --muted: #a7a7a7; /* cool grey */
+        --line: #1c2333; /* grid line */
+        --gold: #e4b34e; /* accent */
+        --accent: #0a84ff; /* neon blue */
+        --shadow: rgba(0, 0, 0, 0.35);
+        --blur: blur(10px);
+        --r: 16px;
+        --trans: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
       }
-
       * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        height: 100%;
       }
       html {
         scroll-behavior: smooth;
       }
-
       body {
-        font-family: "Montserrat", sans-serif;
+        font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial,
+          sans-serif;
+        background: radial-gradient(
+            1200px 800px at 10% 10%,
+            #10172a 0%,
+            transparent 60%
+          ),
+          radial-gradient(900px 700px at 90% 80%, #141b2f 0%, transparent 60%),
+          var(--bg);
         color: var(--ink);
         line-height: 1.6;
-        min-height: 100vh;
-        background: radial-gradient(
-            1000px 800px at 15% -5%,
-            var(--secondary) 0%,
-            transparent 55%
-          ),
-          radial-gradient(
-            1200px 900px at 110% 20%,
-            var(--primary) 0%,
-            transparent 55%
-          ),
-          linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        background-attachment: fixed;
         overflow-x: hidden;
       }
 
-      /* ====== FULL-SCREEN "MAGICAL" HERO (unchanged vibe) ====== */
-      .hero {
-        position: relative;
-        min-height: 100svh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: clamp(1rem, 3vw, 2rem);
-        overflow: hidden;
-        isolation: isolate;
-      }
-      .ambient {
-        position: absolute;
-        inset: -25vh -25vw;
-        filter: blur(40px) saturate(120%);
-        opacity: 0.6;
-        mix-blend-mode: multiply;
-        z-index: -2;
+      /* Subtle grid */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px
+          );
+        background-size: 48px 48px;
+        opacity: 0.35;
         pointer-events: none;
       }
-      .blob {
-        position: absolute;
-        width: 48vmax;
-        height: 48vmax;
-        border-radius: 50%;
-        background: radial-gradient(
-          circle at 30% 30%,
-          var(--secondary),
-          transparent 60%
-        );
-        animation: blobMove 22s ease-in-out infinite alternate;
-      }
-      .blob.b2 {
-        width: 42vmax;
-        height: 42vmax;
-        left: 60%;
-        top: -10%;
-        background: radial-gradient(
-          circle at 70% 30%,
-          var(--primary),
-          transparent 60%
-        );
-        animation-duration: 26s;
-      }
-      .blob.b3 {
-        width: 56vmax;
-        height: 56vmax;
-        left: 5%;
-        top: 55%;
-        background: radial-gradient(
-          circle at 40% 60%,
-          var(--secondary),
-          transparent 60%
-        );
-        animation-duration: 28s;
-      }
-      @keyframes blobMove {
-        0% {
-          transform: translate3d(-3%, -2%, 0) scale(1);
-        }
-        50% {
-          transform: translate3d(3%, 2%, 0) scale(1.05);
-        }
-        100% {
-          transform: translate3d(-4%, 3%, 0) scale(1.02);
-        }
-      }
-      #stars {
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        pointer-events: none;
-        opacity: 0.75;
-        mix-blend-mode: soft-light;
-      }
-      .hero::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          120deg,
-          transparent,
-          rgba(255, 255, 255, 0.45),
-          transparent
-        );
-        transform: translateX(-120%);
-        animation: shimmer 5s ease-in-out 1.2s infinite;
-        mix-blend-mode: soft-light;
-      }
-      @keyframes shimmer {
-        0% {
-          transform: translateX(-120%);
-        }
-        100% {
-          transform: translateX(120%);
-        }
-      }
-      .hero-inner {
-        max-width: 920px;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transform: translateY(8px);
-        animation: heroIn 0.9s ease forwards;
-      }
-      @keyframes heroIn {
-        to {
-          transform: translateY(0);
-        }
-      }
-      .logo {
-        width: 132px;
-        height: 132px;
-        margin: 0 auto 1rem;
-        background: var(--secondary);
-        border-radius: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--accent-dark);
-        font-size: 2.4rem;
-        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08),
-          inset 0 2px 10px rgba(255, 255, 255, 0.6);
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        animation: float 6s ease-in-out infinite;
-        position: relative;
-      }
-      .logo::before {
-        content: "";
-        position: absolute;
-        inset: -12px;
-        border-radius: inherit;
-        background: radial-gradient(
-          closest-side,
-          rgba(244, 235, 226, 0.5),
-          transparent 70%
-        );
-        filter: blur(12px);
-        z-index: -1;
-      }
-      @keyframes float {
-        0% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-        100% {
-          transform: translateY(0);
-        }
-      }
-      h1 {
-        font-family: "Playfair Display", serif;
-        font-size: clamp(2.1rem, 6vw, 4rem);
-        color: var(--accent-dark);
-        line-height: 1.1;
-        letter-spacing: 0.2px;
-        margin-bottom: 0.6rem;
-      }
-      .subtitle {
-        font-size: clamp(1rem, 2.8vw, 1.2rem);
-        color: var(--muted);
-        max-width: 48ch;
-        margin: 0 auto 1.1rem;
-      }
-      .divider {
-        height: 3px;
-        width: min(120px, 30vw);
-        background: linear-gradient(90deg, var(--secondary), var(--primary));
-        margin: 0 auto 1.1rem;
-        border-radius: 999px;
-        animation: expand 1.2s ease both;
-      }
-      @keyframes expand {
-        from {
-          width: 0;
-        }
-        to {
-          width: min(120px, 30vw);
-        }
-      }
-      .scroll-cue {
-        margin-top: 1rem;
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.45rem;
-        color: var(--accent-dark);
+
+      a {
+        color: inherit;
         text-decoration: none;
-        font-weight: 600;
-        opacity: 0.9;
       }
-      .mouse {
-        width: 22px;
-        height: 34px;
-        border: 2px solid var(--accent-dark);
-        border-radius: 999px;
-        position: relative;
-      }
-      .wheel {
-        position: absolute;
-        left: 50%;
-        top: 7px;
-        width: 3px;
-        height: 6px;
-        margin-left: -1.5px;
-        background: var(--accent-dark);
-        border-radius: 2px;
-        animation: wheel 1.6s ease-in-out infinite;
-      }
-      @keyframes wheel {
-        0% {
-          transform: translateY(0);
-          opacity: 1;
-        }
-        70% {
-          transform: translateY(8px);
-          opacity: 0.2;
-        }
-        100% {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-      .arrow {
-        font-size: 1rem;
-        animation: bounce 1.6s ease-in-out infinite;
-      }
-      @keyframes bounce {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(3px);
-        }
+      .container {
+        width: min(1200px, 92%);
+        margin-inline: auto;
       }
 
-      /* ====== CONTENT WRAP ====== */
-      .wrap {
-        max-width: 1024px;
-        width: 100%;
-        margin: 0 auto;
-        padding: clamp(14px, 2vw, 24px);
+      /* Header */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        background: rgba(9, 12, 20, 0.65);
+        backdrop-filter: var(--blur);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        transform: translateY(-100%);
+        transition: transform 0.5s ease;
       }
-
-      .grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: clamp(14px, 2.2vw, 22px);
+      header.visible {
+        transform: translateY(0);
       }
-      @media (max-width: 900px) {
-        .grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .card {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 16px;
-        padding: clamp(16px, 2.4vw, 26px);
-        box-shadow: 0 14px 40px var(--shadow);
-        backdrop-filter: saturate(140%) blur(8px);
-        transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
-          box-shadow 0.3s ease, opacity 0.5s ease;
-      }
-      .card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 18px 44px var(--shadow);
-      }
-
-      /* ===== INFO CARD (left) ===== */
-      .info-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.85rem;
-        margin-bottom: 1rem;
-      }
-      .info-item i {
-        font-size: 1.1rem;
-        line-height: 1;
-        color: #2f2a26;
-        background: linear-gradient(180deg, var(--secondary), var(--primary));
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 10px;
-        padding: 0.55rem 0.6rem;
-        box-shadow: 0 6px 14px var(--shadow);
-      }
-      .info-text h3 {
-        font-family: "Playfair Display", serif;
-        font-size: 1.18rem;
-        color: var(--accent-dark);
-        margin-top: 0.08rem;
-        margin-bottom: 0.15rem;
-      }
-      .info-text p {
-        color: var(--muted);
-      }
-
-      /* ===== PROFESSIONAL RSVP FORM (right) ===== */
-      .form-card {
-        /* elegant gradient border */
-        background: linear-gradient(#fff, #fff) padding-box,
-          linear-gradient(135deg, var(--secondary), var(--primary)) border-box;
-        border: 1px solid transparent;
-        border-radius: 18px;
-        box-shadow: 0 16px 48px var(--shadow);
-        opacity: 0;
-        transform: translateY(16px) scale(0.995);
-        visibility: hidden;
-      }
-      .form-card.show {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        visibility: visible;
-        transition: opacity 0.6s ease, transform 0.6s ease;
-      }
-
-      .form-header {
+      .nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
-        padding-bottom: 0.75rem;
+        padding: 18px 0;
       }
-      .form-title {
+      .brand {
         display: flex;
         align-items: center;
-        gap: 0.65rem;
-        font-family: "Playfair Display", serif;
-        color: var(--accent-dark);
-        font-size: 1.6rem;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
       }
-      .badge {
+      .brand .mark {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 220deg,
+          var(--gold),
+          #fff0 20deg,
+          var(--gold)
+        );
+        display: grid;
+        place-items: center;
+        box-shadow: 0 10px 30px var(--shadow);
+      }
+      .brand b {
+        font-family: "Bebas Neue", system-ui;
+        font-size: 28px;
+        letter-spacing: 1px;
+      }
+      nav ul {
+        display: flex;
+        gap: 28px;
+        list-style: none;
+      }
+      nav a {
+        font-weight: 600;
+        opacity: 0.9;
+      }
+      nav a:hover {
+        opacity: 1;
+      }
+      .cta {
+        padding: 10px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        font-size: 0.85rem;
-        color: var(--accent-dark);
-        background: linear-gradient(180deg, var(--primary), var(--secondary));
-        padding: 0.4rem 0.6rem;
-        border-radius: 999px;
-        border: 1px solid rgba(0, 0, 0, 0.06);
+        gap: 10px;
+      }
+      .cta.primary {
+        background: linear-gradient(120deg, var(--gold), #f6d27a);
+        color: #141414;
+        border: none;
+        box-shadow: 0 8px 28px rgba(228, 179, 78, 0.25);
       }
 
-      /* grid inside the form */
-      .form-grid {
+      /* Hero */
+      .hero {
+        min-height: 92vh;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        place-items: center;
+        padding-top: 90px;
+        position: relative;
+        overflow: hidden;
       }
-      @media (max-width: 680px) {
-        .form-grid {
+      .hero-wrap {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 48px;
+        align-items: center;
+      }
+      @media (max-width: 900px) {
+        .hero-wrap {
+          grid-template-columns: 1fr;
+          gap: 28px;
+          text-align: center;
+        }
+      }
+      .kicker {
+        color: var(--gold);
+        letter-spacing: 0.15em;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .title {
+        font-family: "Bebas Neue", system-ui;
+        font-size: clamp(44px, 8vw, 88px);
+        line-height: 1.02;
+        margin: 0.15em 0;
+        background: linear-gradient(180deg, #fff, #c9d7ff 50%, #aab7ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .subtitle {
+        max-width: 60ch;
+        color: var(--muted);
+        font-size: 1.1rem;
+      }
+      .hero-cta {
+        margin-top: 28px;
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      /* Flyer card */
+      .flyer {
+        position: relative;
+        aspect-ratio: 4/5;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 60px var(--shadow);
+      }
+      .flyer img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(1.1) contrast(1.05);
+      }
+      .sticker {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: var(--blur);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .corner {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        padding: 14px 16px;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.65), transparent);
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+      }
+      .corner b {
+        font-size: 20px;
+      }
+
+      /* Event Info */
+      .info {
+        padding: 72px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          transparent
+        );
+      }
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+      }
+      @media (max-width: 900px) {
+        .info-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .info-grid {
           grid-template-columns: 1fr;
         }
       }
-
-      /* floating fields */
-      .field {
-        position: relative;
-      }
-      .field input,
-      .field select {
-        width: 100%;
-        border-radius: 12px;
-        border: 1px solid rgba(0, 0, 0, 0.12);
-        background: #fff;
-        padding: 20px 14px 10px 14px;
-        font: inherit;
-        transition: border 0.18s ease, box-shadow 0.18s ease,
-          transform 0.18s ease, background 0.18s ease;
-      }
-      .field input::placeholder {
-        color: transparent;
-      }
-      .field select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M5 7l5 6 5-6' fill='none' stroke='%233c342f' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        padding-right: 40px;
-      }
-      .field label {
-        position: absolute;
-        left: 12px;
-        top: 12px;
-        padding: 0 6px;
-        background: #fff;
-        color: var(--muted);
-        font-size: 0.95rem;
-        transform-origin: left top;
-        transition: transform 0.18s ease, color 0.18s ease, top 0.18s ease;
-        pointer-events: none;
-      }
-      .field input:focus,
-      .field select:focus {
-        outline: none;
-        border-color: transparent;
-        box-shadow: 0 0 0 5px var(--ring), 0 10px 22px var(--shadow);
-        transform: translateY(-1px);
-      }
-      /* float label when focused or has value */
-      .field input:focus + label,
-      .field input:not(:placeholder-shown) + label,
-      .field select:focus + label,
-      .field select.filled + label {
-        top: -8px;
-        transform: scale(0.85);
-        color: var(--accent-dark);
-      }
-
-      /* inline help / error */
-      .help {
-        font-size: 0.85rem;
-        color: var(--muted);
-        margin-top: 0.35rem;
-      }
-      .error {
-        display: none;
-        font-size: 0.85rem;
-        color: #b83a3a;
-        margin-top: 0.35rem;
-      }
-      .field.invalid .error {
-        display: block;
-      }
-      .field.invalid input,
-      .field.invalid select {
-        border-color: #e09d9d;
-        box-shadow: 0 0 0 3px rgba(184, 58, 58, 0.12);
-      }
-
-      /* button */
-      .actions {
-        margin-top: 0.4rem;
-      }
-      button {
-        width: 100%;
-        padding: 14px 16px;
-        background: var(--accent-dark);
-        color: #fff;
-        border: none;
-        border-radius: 12px;
-        font: 600 1.05rem "Montserrat", sans-serif;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.18s ease, box-shadow 0.25s ease,
-          background 0.25s ease;
-        box-shadow: 0 10px 24px rgba(60, 52, 47, 0.28);
-        isolation: isolate;
-      }
-      button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 30px rgba(60, 52, 47, 0.3);
-      }
-      button:active {
-        transform: translateY(0);
-      }
-      button::after {
-        content: "";
-        position: absolute;
-        inset: -2px;
-        border-radius: 14px;
-        z-index: -1;
-        background: conic-gradient(
-          from var(--ang, 0deg),
-          var(--secondary),
-          var(--primary),
-          var(--secondary)
-        );
-        filter: blur(10px);
-        opacity: 0.55;
-        animation: borderSpin 4s linear infinite;
-      }
-      @keyframes borderSpin {
-        to {
-          --ang: 360deg;
-        }
-      }
-      button .ripple {
-        position: absolute;
-        border-radius: 999px;
-        transform: scale(0);
-        background: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.7) 0%,
-          rgba(255, 255, 255, 0) 70%
-        );
-        animation: ripple 0.6s linear;
-        pointer-events: none;
-      }
-      @keyframes ripple {
-        to {
-          transform: scale(12);
-          opacity: 0;
-        }
-      }
-
-      .footnote {
-        margin-top: 0.65rem;
+      .info-tile {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--r);
+        padding: 18px 18px 16px;
         display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        gap: 14px;
+        align-items: flex-start;
+      }
+      .info-tile i {
+        color: var(--gold);
+        font-size: 22px;
+        margin-top: 4px;
+      }
+      .info-tile h4 {
+        font-size: 13px;
+        letter-spacing: 0.18em;
         color: var(--muted);
-        font-size: 0.9rem;
+        text-transform: uppercase;
+      }
+      .info-tile p {
+        font-weight: 700;
       }
 
-      /* success state card */
-      .success {
-        display: none;
-        text-align: center;
-        padding: 1rem 0.25rem 0.5rem;
+      /* About / Tracklist */
+      .about {
+        padding: 80px 0;
+        display: grid;
+        gap: 50px;
       }
-      .success.show {
-        display: block;
-        animation: fadeIn 0.4s ease both;
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 16px;
       }
-      .success .check {
-        width: 62px;
-        height: 62px;
-        border-radius: 50%;
+      .section-head h2 {
+        font-family: "Bebas Neue";
+        font-size: 56px;
+        letter-spacing: 0.5px;
+      }
+      .section-head p {
+        color: var(--muted);
+      }
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 36px;
+      }
+      @media (max-width: 980px) {
+        .about-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .about-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--r);
+        padding: 22px;
+      }
+      .track {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 10px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      }
+      .track:last-child {
+        border: none;
+      }
+      .tag {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        background: linear-gradient(180deg, #dff5e9, #f2fff7);
-        color: var(--ok);
-        border: 1px solid rgba(27, 143, 74, 0.25);
-        box-shadow: 0 10px 26px var(--shadow);
-        margin-bottom: 0.65rem;
-      }
-      .success h3 {
-        font-family: "Playfair Display", serif;
-        color: var(--accent-dark);
-        font-size: 1.4rem;
-        margin-bottom: 0.4rem;
-      }
-      .success p {
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.03);
+        font-size: 12px;
         color: var(--muted);
       }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(6px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+      /* Gallery */
+      .gallery {
+        padding: 80px 0;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+      .shot {
+        position: relative;
+        height: 320px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .shot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+      }
+      .shot:hover img {
+        transform: scale(1.05);
+      }
+      .c-6 {
+        grid-column: span 6;
+      }
+      .c-4 {
+        grid-column: span 4;
+      }
+      .c-8 {
+        grid-column: span 8;
+      }
+      @media (max-width: 900px) {
+        .c-6,
+        .c-4,
+        .c-8 {
+          grid-column: span 12;
         }
       }
 
-      /* reduced motion */
-      @media (prefers-reduced-motion: reduce) {
-        * {
-          animation: none !important;
-          transition: none !important;
-        }
-        #stars,
-        .ambient,
-        .hero::after {
-          display: none;
+      /* RSVP */
+      .rsvp {
+        padding: 90px 0;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          transparent
+        );
+      }
+      .rsvp-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+      }
+      @media (max-width: 960px) {
+        .rsvp-wrap {
+          grid-template-columns: 1fr;
         }
       }
+      .card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: 0 20px 60px var(--shadow);
+      }
+      form {
+        display: grid;
+        gap: 14px;
+      }
+      label {
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.35);
+        color: var(--ink);
+        outline: none;
+        transition: var(--trans);
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 4px rgba(228, 179, 78, 0.15);
+      }
+      button {
+        padding: 12px 16px;
+        border-radius: 14px;
+        border: none;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .btn-primary {
+        background: linear-gradient(120deg, var(--gold), #f6d27a);
+        color: #141414;
+      }
+      .btn-ghost {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: var(--ink);
+      }
 
-      /* small phones polish */
-      @media (max-width: 520px) {
-        .logo {
-          width: 110px;
-          height: 110px;
-          border-radius: 22px;
-        }
-        .wrap {
-          padding: 12px;
-        }
-        .card {
-          padding: 14px;
-        }
-        .form-title {
-          font-size: 1.45rem;
-        }
+      /* Footer */
+      footer {
+        padding: 40px 0;
+        color: var(--muted);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      /* Utilities */
+      .pill {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
       }
     </style>
   </head>
   <body>
-    <!-- FULL-SCREEN HERO -->
-    <section class="hero" id="top">
-      <div class="ambient" aria-hidden="true">
-        <div class="blob"></div>
-        <div class="blob b2"></div>
-        <div class="blob b3"></div>
-      </div>
-      <canvas id="stars" aria-hidden="true"></canvas>
-
-      <div class="hero-inner">
-        <div class="logo" aria-hidden="true">
-          <i class="fas fa-headphones"></i>
-        </div>
-        <h1>Amandla Listening Session</h1>
-        <p class="subtitle">
-          Lolli Native invites you to an exclusive Intimate Dining listening
-          session
-        </p>
-        <div class="divider"></div>
-        <a href="#info" class="scroll-cue" aria-label="Scroll to details">
-          <div class="mouse"><span class="wheel"></span></div>
-          <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
+    <!-- Header -->
+    <header id="header">
+      <div class="container nav">
+        <a href="#" class="brand">
+          <span class="mark"><i class="fa-solid fa-music"></i></span>
+          <b>Listening Session</b>
         </a>
+        <nav>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#rsvp" class="cta">RSVP</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-wrap">
+        <div>
+          <span class="kicker">Exclusive • One Night Only</span>
+          <h1 class="title">Album Listening Session</h1>
+          <p class="subtitle">
+            Pull up and lock in. Intimate studio vibes, hi‑fidelity playback,
+            and a live Q&A with the artist and producers. Dress code: clean.
+            Energy: unmatched.
+          </p>
+          <div class="hero-cta">
+            <a href="#rsvp" class="cta primary"
+              ><i class="fa-regular fa-calendar-check"></i> Reserve your spot</a
+            >
+            <a href="#about" class="cta"
+              ><i class="fa-solid fa-circle-play"></i> About the project</a
+            >
+          </div>
+        </div>
+        <div class="flyer">
+          <!-- Replace these images with your own assets -->
+          <img src="/cybernative.png" alt="Album Artwork / Artist Portrait" />
+          <div class="sticker">
+            <i class="fa-solid fa-headphones-simple"></i> Hi‑Fi Preview
+          </div>
+          <div class="corner">
+            <div>
+              <div class="pill">
+                <i class="fa-solid fa-location-dot"></i> Braamfontein, JHB
+              </div>
+            </div>
+            <b>Fri • 20:00</b>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- CONTENT -->
-    <div class="wrap">
-      <main class="grid">
-        <!-- INFO CARD -->
-        <section id="info" class="card">
-          <div class="info-item">
-            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-            <div class="info-text">
-              <h3>Venue</h3>
-              <p>Dia Studios Hydepark</p>
-            </div>
+    <!-- Event Info -->
+    <section class="info">
+      <div class="container info-grid">
+        <div class="info-tile">
+          <i class="fa-solid fa-calendar-day"></i>
+          <div>
+            <h4>Date</h4>
+            <p>Saturday, 28 September 2025</p>
           </div>
-          <div class="info-item">
-            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-            <div class="info-text">
-              <h3>Date</h3>
-              <p>18 July 2025</p>
-            </div>
+        </div>
+        <div class="info-tile">
+          <i class="fa-solid fa-clock"></i>
+          <div>
+            <h4>Time</h4>
+            <p>Doors 19:00 • Playback 20:00</p>
           </div>
-          <div class="info-item">
-            <i class="fas fa-clock" aria-hidden="true"></i>
-            <div class="info-text">
-              <h3>Time</h3>
-              <p>18:00 for 19:00 hours</p>
-            </div>
+        </div>
+        <div class="info-tile">
+          <i class="fa-solid fa-location-arrow"></i>
+          <div>
+            <h4>Venue</h4>
+            <p>Room 808 Studio, Braamfontein, Johannesburg</p>
           </div>
-          <div class="info-item">
-            <i class="fas fa-music" aria-hidden="true"></i>
-            <div class="info-text">
-              <h3>Special Guest</h3>
-              <p>Live Q&amp;A with the artist</p>
-            </div>
+        </div>
+        <div class="info-tile">
+          <i class="fa-solid fa-user-group"></i>
+          <div>
+            <h4>Capacity</h4>
+            <p>Limited seats • RSVP essential</p>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
 
-        <!-- PROFESSIONAL RSVP (reveals on scroll) -->
-        <section id="rsvp" class="card form-card">
-          <div class="form-header">
-            <div class="form-title">
-              <i class="fa-solid fa-envelope-open-text"></i> <span>RSVP</span>
-            </div>
-            <span class="badge"><i class="fa-solid fa-lock"></i> Secure</span>
-          </div>
-
-          <form id="rsvpForm" novalidate>
-            <div class="form-grid">
-              <!-- Full Name -->
-              <div class="field" data-name>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder=" "
-                  required
-                  autocomplete="name"
-                  aria-describedby="nameHelp"
-                />
-                <label for="name">Full Name</label>
-                <div class="help" id="nameHelp">
-                  As it should appear on your pass.
-                </div>
-                <div class="error">Please enter your full name.</div>
-              </div>
-
-              <!-- Email -->
-              <div class="field" data-email>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder=" "
-                  required
-                  autocomplete="email"
-                  aria-describedby="emailHelp"
-                />
-                <label for="email">Email Address</label>
-                <div class="help" id="emailHelp">
-                  We’ll send confirmation to this address.
-                </div>
-                <div class="error">Enter a valid email address.</div>
-              </div>
-
-              <!-- Guests -->
-              <!-- <div class="field" data-guests>
-                <select id="guests" name="guests" required>
-                  <option value="" disabled selected hidden></option>
-                  <option value="1">1 Person</option>
-                  <option value="2">2 People</option>
-                  <option value="3">3 People</option>
-                  <option value="4">4 People</option>
-                </select>
-                <label for="guests">Number of Guests</label>
-                <div class="error">Select how many are attending.</div>
-              </div> -->
-
-              <!-- (Optional) Notes -->
-              <div class="field" data-notes>
-                <input
-                  id="notes"
-                  name="notes"
-                  type="text"
-                  placeholder=" "
-                  autocomplete="off"
-                />
-                <label for="notes">Notes (optional)</label>
-                <div class="help">E.g., dietary needs or accessibility.</div>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button type="submit" id="submitBtn">
-                <span>Confirm Attendance</span>
-              </button>
-              <div class="footnote">
-                <i class="fa-regular fa-shield"></i>
-                <span
-                  >Your details are kept private and used only for this
-                  event.</span
-                >
-              </div>
-            </div>
-          </form>
-
-          <!-- Success state (replaces form on submit) -->
-          <div
-            class="success"
-            id="successState"
-            role="status"
-            aria-live="polite"
-          >
-            <div class="check"><i class="fa-solid fa-check fa-lg"></i></div>
-            <h3>RSVP Received</h3>
-            <p>
-              We’ve emailed your confirmation. See you at the listening session.
-            </p>
-          </div>
-        </section>
-      </main>
-
-      <footer>
-        <p style="text-align: center; color: var(--muted); margin-top: 12px">
-          © 2025 Lolli Native · All rights reserved
+    <!-- About & Tracklist -->
+    <section id="about" class="about container">
+      <div class="section-head">
+        <h2>The Project</h2>
+        <p class="tag">
+          <i class="fa-solid fa-circle"></i> genre: hip hop / soul / alt
         </p>
-      </footer>
-    </div>
+      </div>
+      <div class="about-grid">
+        <div class="about-card">
+          <h3 style="margin-bottom: 10px">Story & Vibe</h3>
+          <p style="color: var(--ink); opacity: 0.9">
+            Built in late nights and early flights — the tape is a journal:
+            scars, wins, and everything in between. Sonics range from dusty soul
+            chops to glossy 808s. If you’ve been day‑one, you’ll hear the growth
+            immediately.
+          </p>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px"
+          >
+            <span class="pill"
+              ><i class="fa-solid fa-record-vinyl"></i> Analog chain</span
+            >
+            <span class="pill"
+              ><i class="fa-solid fa-shield-halved"></i> No phones policy</span
+            >
+            <span class="pill"
+              ><i class="fa-solid fa-mug-hot"></i> Drinks on deck</span
+            >
+          </div>
+          <div style="margin-top: 18px">
+            <!-- Optional embedded playlist preview (replace with your own link) -->
+            <iframe
+              style="
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+              "
+              src="https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3?utm_source=generator"
+              width="100%"
+              height="152"
+              frameborder="0"
+              allowfullscreen=""
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+        <div class="about-card">
+          <h3 style="margin-bottom: 10px">Tracklist (Sneak Peek)</h3>
+          <div class="track"><span>01. North Star</span><span>3:12</span></div>
+          <div class="track"><span>02. City Taxis</span><span>2:47</span></div>
+          <div class="track">
+            <span>03. Gold Teeth Interlude</span><span>1:06</span>
+          </div>
+          <div class="track">
+            <span>04. Quarter to Fame (ft. TBA)</span><span>3:58</span>
+          </div>
+          <div class="track"><span>05. Dial Tone</span><span>3:21</span></div>
+          <div class="track">
+            <span>06. Midnight Receipts</span><span>2:59</span>
+          </div>
+          <div class="track">
+            <span>07. Backseat Prayers</span><span>3:36</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Confetti layer -->
-    <canvas
-      id="confetti"
-      style="position: fixed; inset: 0; pointer-events: none"
-    ></canvas>
+    <!-- Gallery -->
+    <section id="gallery" class="gallery container">
+      <div class="section-head" style="margin-bottom: 20px">
+        <h2>Gallery</h2>
+        <p>
+          Swap in your own cool pictures — press shots, studio candids, cover
+          drafts.
+        </p>
+      </div>
+      <div class="grid">
+        <div class="shot c-8">
+          <img src="/assets/images/studio-1.jpg" alt="Studio session" />
+        </div>
+        <div class="shot c-4">
+          <img src="/assets/images/artist-1.jpg" alt="Artist portrait" />
+        </div>
+        <div class="shot c-6">
+          <img src="/assets/images/crowd-1.jpg" alt="Crowd" />
+        </div>
+        <div class="shot c-6">
+          <img src="/assets/images/turntable.jpg" alt="Vinyl turntable" />
+        </div>
+      </div>
+    </section>
+
+    <!-- RSVP -->
+    <section id="rsvp" class="rsvp">
+      <div class="container rsvp-wrap">
+        <div class="card">
+          <h2
+            style="
+              font-family: 'Bebas Neue';
+              font-size: 48px;
+              margin-bottom: 6px;
+            "
+          >
+            RSVP
+          </h2>
+          <p style="color: var(--muted); margin-bottom: 14px">
+            Lock in your seat. We’ll send confirmation + details. Guest list
+            only.
+          </p>
+          <form id="rsvp-form">
+            <div>
+              <label for="name">Full Name</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Your name"
+                required
+              />
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            <div>
+              <label for="phone">Phone (WhatsApp)</label>
+              <input id="phone" name="phone" type="tel" placeholder="+27 …" />
+            </div>
+            <div>
+              <label for="guests">How many guests (incl. you)</label>
+              <select id="guests" name="guests" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+            <div>
+              <label for="attend">Will you attend?</label>
+              <select id="attend" name="attend" required>
+                <option value="Yes">Yes</option>
+                <option value="Maybe">Maybe</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div>
+              <label for="notes">Notes (dietary, access needs, etc.)</label>
+              <textarea
+                id="notes"
+                name="notes"
+                rows="4"
+                placeholder="Anything we should know?"
+              ></textarea>
+            </div>
+            <div
+              style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px"
+            >
+              <button class="btn btn-primary" type="submit">
+                <i class="fa-regular fa-paper-plane"></i> Submit RSVP
+              </button>
+              <a
+                class="btn btn-ghost"
+                id="calendar-link"
+                href="#"
+                target="_blank"
+                ><i class="fa-regular fa-calendar-plus"></i> Add to Calendar</a
+              >
+            </div>
+            <p
+              id="rsvp-status"
+              style="margin-top: 8px; color: var(--muted)"
+            ></p>
+          </form>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom: 10px">Venue</h3>
+          <p>Room 808 Studio<br />70 Juta St, Braamfontein, Johannesburg</p>
+          <div style="margin-top: 14px">
+            <iframe
+              style="
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+              "
+              src="https://www.google.com/maps?q=Braamfontein%2C%20Johannesburg&output=embed"
+              width="100%"
+              height="260"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div
+            style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px"
+          >
+            <span class="pill"
+              ><i class="fa-solid fa-train-subway"></i> Near Rea Vaya</span
+            >
+            <span class="pill"
+              ><i class="fa-solid fa-square-parking"></i> Safe parking</span
+            >
+            <span class="pill"
+              ><i class="fa-solid fa-lock"></i> Security on site</span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div
+        class="container"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 16px;
+          flex-wrap: wrap;
+        "
+      >
+        <small>© 2025 — Listening Session</small>
+        <div style="display: flex; gap: 14px; align-items: center">
+          <a class="pill" href="#rsvp"
+            ><i class="fa-regular fa-envelope"></i> Contact</a
+          >
+          <a class="pill" href="#gallery"
+            ><i class="fa-regular fa-images"></i> Gallery</a
+          >
+        </div>
+      </div>
+    </footer>
 
     <script>
-      /* ===== starfield behind hero ===== */
-      const stars = document.getElementById("stars");
-      const sCtx = stars.getContext("2d");
-      let starArr = [];
-      function resizeStars() {
-        stars.width = window.innerWidth;
-        stars.height = Math.max(window.innerHeight, window.screen.height * 0.6);
-        starArr = Array.from({ length: 120 }, () => ({
-          x: Math.random() * stars.width,
-          y: Math.random() * stars.height,
-          r: Math.random() * 1.6 + 0.3,
-          a: Math.random() * Math.PI * 2,
-        }));
-      }
-      function drawStars() {
-        sCtx.clearRect(0, 0, stars.width, stars.height);
-        starArr.forEach((st) => {
-          st.a += 0.02;
-          const tw = ((Math.sin(st.a) + 1) / 2) * 0.6 + 0.2;
-          sCtx.beginPath();
-          sCtx.arc(st.x, st.y, st.r * tw, 0, Math.PI * 2);
-          sCtx.fillStyle = "rgba(255,255,255,0.9)";
-          sCtx.fill();
-        });
-        requestAnimationFrame(drawStars);
-      }
-      window.addEventListener("resize", resizeStars);
-      resizeStars();
-      drawStars();
+      // Show header after first scroll
+      const header = document.getElementById("header");
+      const revealHeader = () => {
+        if (window.scrollY > 40) header.classList.add("visible");
+        else header.classList.remove("visible");
+      };
+      revealHeader();
+      window.addEventListener("scroll", revealHeader);
 
-      /* ===== reveal RSVP form on scroll ===== */
-      const rsvpCard = document.getElementById("rsvp");
+      // EmailJS init (replace with your keys)
       (function () {
-        if (!("IntersectionObserver" in window)) {
-          rsvpCard.classList.add("show");
-          return;
-        }
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => {
-              if (e.isIntersecting) {
-                rsvpCard.classList.add("show");
-                io.unobserve(rsvpCard);
-              }
-            });
-          },
-          { threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
-        );
-        io.observe(rsvpCard);
+        emailjs.init("Uo0A0uprHKDmk3url"); // TODO: replace with your EmailJS Public Key
       })();
 
-      /* ===== enhance select label state ===== */
-      const guests = document.getElementById("guests");
-      function syncSelectLabel() {
-        guests.classList.toggle("filled", !!guests.value);
+      // Add-to-calendar link builder (simple ICS via data URI)
+      function buildICS({ title, description, location, start, end }) {
+        const pad = (n) => String(n).padStart(2, "0");
+        const fmt = (d) =>
+          `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(
+            d.getUTCDate()
+          )}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+        const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Album Listening//EN\nBEGIN:VEVENT\nUID:${Date.now()}@listening.local\nDTSTAMP:${fmt(
+          new Date()
+        )}\nDTSTART:${fmt(start)}\nDTEND:${fmt(
+          end
+        )}\nSUMMARY:${title}\nDESCRIPTION:${description}\nLOCATION:${location}\nEND:VEVENT\nEND:VCALENDAR`;
+        return "data:text/calendar;charset=utf8," + encodeURIComponent(ics);
       }
-      guests.addEventListener("change", syncSelectLabel);
-      syncSelectLabel();
 
-      /* ===== button ripple ===== */
-      const btn = document.getElementById("submitBtn");
-      btn.addEventListener("click", function (e) {
-        const rect = this.getBoundingClientRect();
-        const circle = document.createElement("span");
-        const size = Math.max(rect.width, rect.height);
-        circle.style.width = circle.style.height = size + "px";
-        circle.style.left = e.clientX - rect.left - size / 2 + "px";
-        circle.style.top = e.clientY - rect.top - size / 2 + "px";
-        circle.classList.add("ripple");
-        this.appendChild(circle);
-        circle.addEventListener("animationend", () => circle.remove());
+      // Configure calendar link for the shown sample date/time (adjust to your real event)
+      const calLink = document.getElementById("calendar-link");
+      const start = new Date("2025-09-28T18:00:00+02:00"); // Doors 19:00 local, set start earlier if you like
+      const end = new Date("2025-09-28T22:00:00+02:00");
+      calLink.href = buildICS({
+        title: "Album Listening Session",
+        description: "Exclusive playback + Q&A. Guest list only.",
+        location: "Room 808 Studio, Braamfontein, Johannesburg",
+        start,
+        end,
       });
 
-      /* ===== tasteful confetti for success ===== */
-      const confettiCanvas = document.getElementById("confetti");
-      const ctx = confettiCanvas.getContext("2d");
-      let confettiPieces = [],
-        confettiActive = false;
-      function resizeConfetti() {
-        confettiCanvas.width = innerWidth;
-        confettiCanvas.height = innerHeight;
-      }
-      window.addEventListener("resize", resizeConfetti);
-      resizeConfetti();
-
-      function makeConfetti() {
-        const colors = ["#2b2622", "#E6D4C2", "#F4EBE2"];
-        for (let i = 0; i < 80; i++) {
-          confettiPieces.push({
-            x: Math.random() * confettiCanvas.width,
-            y: -10 - (Math.random() * confettiCanvas.height) / 3,
-            r: 3 + Math.random() * 4,
-            c: colors[Math.floor(Math.random() * colors.length)],
-            s: 1 + Math.random() * 2,
-            a: Math.random() * Math.PI * 2,
-            va: (Math.random() - 0.5) * 0.12,
-          });
-        }
-        confettiActive = true;
-        requestAnimationFrame(drawConfetti);
-        setTimeout(() => {
-          confettiActive = false;
-          confettiPieces = [];
-          ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        }, 1600);
-      }
-      function drawConfetti() {
-        if (!confettiActive) return;
-        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        confettiPieces.forEach((p) => {
-          p.y += p.s * 2.1;
-          p.x += Math.sin(p.a) * 1.2;
-          p.a += p.va;
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.a);
-          ctx.fillStyle = p.c;
-          ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 1.5);
-          ctx.restore();
-        });
-        confettiPieces = confettiPieces.filter(
-          (p) => p.y < confettiCanvas.height + 12
-        );
-        requestAnimationFrame(drawConfetti);
-      }
-
-      /* ===== form validation + success state (professional, no alerts) ===== */
-      const form = document.getElementById("rsvpForm");
-      const success = document.getElementById("successState");
-
-      function setError(fieldEl, hasError) {
-        fieldEl.classList.toggle("invalid", hasError);
-      }
-
-      form.addEventListener("submit", function (e) {
+      // RSVP form handler
+      const form = document.getElementById("rsvp-form");
+      const statusEl = document.getElementById("rsvp-status");
+      form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const name = document.getElementById("name");
-        const email = document.getElementById("email");
-
-        let bad = false;
-        // name
-        if (!name.value.trim()) {
-          setError(name.parentElement, true);
-          bad = true;
-        } else {
-          setError(name.parentElement, false);
+        statusEl.textContent = "Sending…";
+        try {
+          const serviceID = "service_r4m5dxe"; // TODO: replace
+          const templateID = "template_nst54u2"; // TODO: replace
+          await emailjs.sendForm(serviceID, templateID, form);
+          statusEl.textContent =
+            "✅ You're on the list! Check your email for details.";
+          form.reset();
+        } catch (err) {
+          console.error(err);
+          statusEl.textContent =
+            "❌ Could not send RSVP. Please try again or DM us.";
         }
-        // email
-        const mailOK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
-        if (!mailOK) {
-          setError(email.parentElement, true);
-          bad = true;
-        } else {
-          setError(email.parentElement, false);
-        }
-        // guests
-        if (!guests.value) {
-          setError(guests.parentElement, true);
-          bad = true;
-        } else {
-          setError(guests.parentElement, false);
-        }
-
-        if (bad) return;
-
-        // pretend submit
-        btn.disabled = true;
-        const old = btn.textContent;
-        btn.textContent = "Sending…";
-
-        setTimeout(() => {
-          // swap form for success state
-          form.style.display = "none";
-          success.classList.add("show");
-          btn.disabled = false;
-          btn.textContent = old;
-          makeConfetti();
-        }, 900);
-      });
-
-      // remove errors on input
-      ["name", "email", "notes"].forEach((id) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener("input", () => setError(el.parentElement, false));
       });
     </script>
   </body>
