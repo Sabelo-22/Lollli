@@ -181,7 +181,7 @@
       }
 
       /* Hero */
-      .hero1 {
+      /* .hero1 {
         min-height: 100vh;
         display: grid;
         place-items: center;
@@ -272,6 +272,7 @@
       .corner1 b {
         font-size: 20px;
       }
+      */
 
       /* Event Info */
       .info {
@@ -587,6 +588,61 @@
         .hero-meta {
           justify-content: center;
         }
+      } /* Center the section like a hero */
+      .hero1 {
+        /* account for fixed header vibe; adjust 90px if yours differs */
+        min-height: calc(100vh - 90px);
+        display: grid;
+        place-items: center; /* centers content both ways */
+        padding: clamp(40px, 8vh, 80px) 0;
+        position: relative;
+        text-align: center;
+      }
+
+      /* keep your inner container tidy */
+      .hero-wrap1 {
+        width: min(1100px, 92%);
+        margin-inline: auto;
+        display: grid;
+        gap: 14px;
+      }
+
+      /* typography to match your main hero */
+      .kicker1 {
+        color: var(--gold);
+        letter-spacing: 0.15em;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .title1 {
+        font-family: "Bebas Neue", system-ui, sans-serif;
+        font-size: clamp(42px, 8vw, 92px);
+        line-height: 1.02;
+        color: var(--ink);
+        text-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      .subtitle1 {
+        color: var(--muted);
+        font-size: clamp(1rem, 2.2vw, 1.25rem);
+        max-width: 65ch;
+        margin-inline: auto;
+      }
+
+      .hero-cta1 {
+        margin-top: 18px;
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* mobile niceties */
+      @media (max-width: 600px) {
+        .hero1 {
+          min-height: 90vh;
+        }
       }
     </style>
   </head>
@@ -663,21 +719,6 @@
             >
           </div>
         </div>
-        <!-- <div class="flyer1">
-        
-          <img src="/AMANDLA.png" alt="Album Artwork / Artist Portrait" />
-          <div class="sticker1">
-            <i class="fa-solid fa-headphones-simple"></i> Hi‑Fi Preview
-          </div>
-          <div class="corner1">
-            <div>
-              <div class="pill">
-                <i class="fa-solid fa-location-dot"></i> HYDE PARK
-              </div>
-            </div>
-            <b>THU • 18:00</b>
-          </div>
-        </div> -->
       </div>
     </section>
 
