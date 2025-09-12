@@ -18,6 +18,10 @@
       rel="stylesheet"
     />
 
+    <!-- Firebase (compat builds to keep it simple) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
     <!-- EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
@@ -1153,6 +1157,57 @@ Experience every verse, every beat, every moment.</p>
         </div>
       </div>
     </footer>
+
+    <script>
+  // TODO: replace with your own config from Firebase Console → Project settings → Your apps (</>)
+  const firebaseConfig = {
+  apiKey: "AIzaSyAT2yqiArepzYR2B3fQemLhdbjMwbsi_aA",
+  authDomain: "cybernative-fc60c.firebaseapp.com",
+  projectId: "cybernative-fc60c",
+  storageBucket: "cybernative-fc60c.firebasestorage.app",
+  messagingSenderId: "862008823018",
+  appId: "1:862008823018:web:c6821169109c536a9b9b93",
+  measurementId: "G-KBGBRKR2H3"
+};
+
+
+  // Init Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Tap into the existing form *without* changing your current handler
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("rsvp-form");
+    if (!form) return;
+
+    // Register our listener BEFORE your other script runs (this tag is above it)
+    form.addEventListener("submit", async (e) => {
+      try {
+        // Don’t preventDefault here — let your EmailJS code do its thing.
+        const payload = {
+          name:   form.name?.value?.trim()   ?? "",
+          email:  form.email?.value?.trim()  ?? "",
+          phone:  form.phone?.value?.trim()  ?? "",
+          guests: form.guests?.value ?? null,
+          attend: form.attend?.value ?? "",
+          notes:  form.notes?.value?.trim()  ?? "",
+          // handy metadata
+          submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          userAgent: navigator.userAgent,
+          page: location.href
+        };
+
+        // Fire and forget — no UI changes here so we don't clash with your status text/reset
+        await db.collection("rsvps").add(payload);
+        // Optional: console ping for sanity
+        console.log("RSVP saved to Firestore");
+      } catch (err) {
+        console.error("Firestore write failed:", err);
+        // keep quiet in UI so we don't fight your existing status element
+      }
+    });
+  });
+</script>
 
     <script>
       // Show header after first scroll
