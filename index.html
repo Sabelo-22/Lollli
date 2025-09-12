@@ -232,7 +232,7 @@
       /* Flyer card */
       .flyer1 {
         position: relative;
-        aspect-ratio: 5/5;
+        aspect-ratio: 4/5;
         border-radius: 24px;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -315,13 +315,16 @@
         margin-top: 4px;
       }
       .info-tile h4 {
-        font-size: 13px;
-        letter-spacing: 0.18em;
-        color: var(--muted);
-        text-transform: uppercase;
-      }
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  font-weight: 700; /* or 800/900 if your font supports it */
+  color: "white";
+  text-transform: uppercase;
+}
+
       .info-tile p {
-        font-weight: 700;
+        /* font-weight: 700; */
+        color: var(--muted);
       }
 
       /* About / Tracklist */
@@ -687,7 +690,7 @@
       .subtitle1 {
         color: var(--muted);
         font-size: clamp(1rem, 2.2vw, 1.25rem);
-        max-width: 65ch;
+        max-width: 80ch;
         margin-inline: auto;
       }
 
@@ -735,46 +738,23 @@
       <!-- dark overlay for readability -->
       <div class="hero-overlay"></div>
       <a href="#info1" class="scroll-cue" aria-label="Scroll to details">
-        <div class="mouse"><span class="wheel"></span></div>
+        <div class="mouse"><span class="wheel">scroll</span></div>
         <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
       </a>
-
-      <!-- <div class="container hero-wrap">
-        <div class="hero-copy">
-          <span class="kicker">Exclusive • One Night Only</span>
-          <h1 class="title">Album Listening Session</h1>
-          <p class="subtitle">
-            38 Talent Management presents The Amandla Listening Session
-            Experience.
-          </p>
-          <div class="hero-cta">
-            <a href="#rsvp" class="cta primary">
-              <i class="fa-regular fa-calendar-check"></i> Reserve your spot
-            </a>
-            <a href="#about" class="cta">
-              <i class="fa-solid fa-circle-play"></i> About the project
-            </a>
-          </div>
-        </div>
-        <div class="hero-meta">
-          <div class="pill">
-            <i class="fa-solid fa-location-dot"></i> HYDE PARK
-          </div>
-          <b>THU • 18:00</b>
-        </div>
-      </div> -->
     </section>
 
     <!-- Hero -->
     <section class="hero1" id="info1">
       <div class="container hero-wrap1">
         <div>
-          <span class="kicker1">Exclusive • One Night Only</span>
-          <h1 class="title1">Album Listening Session</h1>
-          <p class="subtitle1">
-            38 Talent Management presents The Amandla Listening Session
-            Experience.
-          </p>
+          <!-- <span class="kicker1">Exclusive • One Night Only</span> -->
+          <span class="kicker1"> 38 Talent Management presents </span>
+          <h1 class="title1">Amandla Listening Experience</h1>
+          <p class="subtitle1">Join Lolli Native as he unveils his highly anticipated second studio album. Born and raised in Nyanga, his lyrics blend Xhosa lyricism with the grit of the streets, transforming lived experience into art that resonates far beyond Nyanga.
+
+Crowned Buddha of the Year, Lolli curates an intimate evening of rhythm, storytelling, and presence, a milestone defined by culture, creativity, and authenticity.
+
+Experience every verse, every beat, every moment.</p>
           <div class="hero-cta1">
             <a href="#rsvp" class="cta primary"
               ><i class="fa-regular fa-calendar-check"></i> Reserve your spot</a
@@ -839,7 +819,13 @@
             resilience, and the people who lift us when we fall. Dedicated to
             his sister Amanda, a pillar of support and inspiration, the album
             celebrates family, friends, and community who have shaped his
-            journey.
+            journey. Blending Spaza-rooted hip-hop, gospel influences, and
+            modern African sounds, Amandla features collaborations with Esethu
+            Siwe, Bugzito, Jay Claude, 25K, Anzo, Saudi, Phila Madlingozi, and
+            Emtee. Every track carries honesty, gratitude, and purpose, creating
+            music that is both intimate and powerful. With Amandla, Lolli Native
+            shares his story, honors his roots, and celebrates the unity and
+            love that make us stronger.
           </p>
           <div
             style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px"
@@ -903,7 +889,7 @@
     </section>
 
     <!-- Gallery -->
-    <section id="gallery" class="gallery container">
+    <!-- <section id="gallery" class="gallery container">
       <div class="section-head" style="margin-bottom: 20px">
         <h2>Dress Code</h2>
         <p>please adhere to the theme or entrance will be denied</p>
@@ -922,7 +908,7 @@
           <img src="/ui.jpg" alt="Vinyl turntable" />
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- RSVP -->
     <section id="rsvp" class="rsvp">
@@ -1013,34 +999,19 @@
           </form>
         </div>
         <div class="card">
-          <h3 style="margin-bottom: 10px">Venue</h3>
-          <p>
-            Hyde Park. The exact location will be revealed closer to the event
-          </p>
-          <div style="margin-top: 14px">
-            <iframe
-              style="
-                border-radius: 12px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-              "
-              src="https://www.google.com/maps/place/Hyde+Park,+Sandton,+2196/@-26.1245971,28.0286682,15z/data=!4m15!1m8!3m7!1s0x1e950cb70efaac55:0x52b3b855fed7cda!2sHyde+Park,+Sandton,+2196!3b1!8m2!3d-26.1210542!4d28.0391009!16zL20vMDZ0OGJr!3m5!1s0x1e950cb70efaac55:0x52b3b855fed7cda!8m2!3d-26.1210542!4d28.0391009!16zL20vMDZ0OGJr?entry=ttu&g_ep=EgoyMDI1MDkwOS4wIKXMDSoASAFQAw%3D%3D"
-              width="100%"
-              height="260"
-              loading="lazy"
-            ></iframe>
+         <div class="flyer1">
+          <!-- Replace these images with your own assets -->
+          <img src="/cybernative.png" alt="Album Artwork / Artist Portrait" />
+          <div class="sticker1">
+            <i class="fa-solid fa-headphones-simple"></i> Hi‑Fi Preview
           </div>
-          <div
-            style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px"
-          >
-            <span class="pill"
-              ><i class="fa-solid fa-train-subway"></i> Near Rea Vaya</span
-            >
-            <span class="pill"
-              ><i class="fa-solid fa-square-parking"></i> Safe parking</span
-            >
-            <span class="pill"
-              ><i class="fa-solid fa-lock"></i> Security on site</span
-            >
+          <div class="corner1">
+            <div>
+              <div class="pill1">
+                <i class="fa-solid fa-location-dot"></i> HYDE PARK
+              </div>
+            </div>
+            <b>THU • 18:00</b>
           </div>
         </div>
       </div>
