@@ -181,7 +181,7 @@
       }
 
       /* Hero */
-      .hero {
+      .hero1 {
         min-height: 100vh;
         display: grid;
         place-items: center;
@@ -189,26 +189,26 @@
         position: relative;
         overflow: hidden;
       }
-      .hero-wrap {
+      .hero-wrap1 {
         display: grid;
         grid-template-columns: 1.1fr 0.9fr;
         gap: 48px;
         align-items: center;
       }
       @media (max-width: 900px) {
-        .hero-wrap {
+        .hero-wrap1 {
           grid-template-columns: 1fr;
           gap: 28px;
           text-align: center;
         }
       }
-      .kicker {
+      .kicker1 {
         color: var(--gold);
         letter-spacing: 0.15em;
         font-weight: 700;
         text-transform: uppercase;
       }
-      .title {
+      .title1 {
         font-family: "Bebas Neue", system-ui;
         font-size: clamp(44px, 8vw, 88px);
         line-height: 1.02;
@@ -217,12 +217,12 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
-      .subtitle {
+      .subtitle1 {
         max-width: 60ch;
         color: var(--muted);
         font-size: 1.1rem;
       }
-      .hero-cta {
+      .hero-cta1 {
         margin-top: 28px;
         display: flex;
         gap: 14px;
@@ -230,21 +230,21 @@
       }
 
       /* Flyer card */
-      .flyer {
+      .flyer1 {
         position: relative;
-        aspect-ratio: 4/5;
+        aspect-ratio: 5/5;
         border-radius: 24px;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.08);
         box-shadow: 0 20px 60px var(--shadow);
       }
-      .flyer img {
+      .flyer1 img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         filter: saturate(1.1) contrast(1.05);
       }
-      .sticker {
+      .sticker1 {
         position: absolute;
         right: 14px;
         top: 14px;
@@ -258,7 +258,7 @@
         align-items: center;
         gap: 8px;
       }
-      .corner {
+      .corner1 {
         position: absolute;
         left: 0;
         bottom: 0;
@@ -269,7 +269,7 @@
         justify-content: space-between;
         align-items: end;
       }
-      .corner b {
+      .corner1 b {
         font-size: 20px;
       }
 
@@ -512,6 +512,81 @@
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.12);
+      } /* Full-bleed hero image */
+      .hero {
+        min-height: 100vh;
+        padding-top: 120px; /* room for fixed header */
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+
+      .hero--image {
+        background: url("/AMANDLA.png") center / cover no-repeat;
+      }
+
+      /* overlay for text contrast */
+      .hero--image .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.55) 0%,
+          rgba(0, 0, 0, 0.25) 45%,
+          rgba(0, 0, 0, 0.65) 100%
+        );
+        pointer-events: none;
+      }
+
+      /* collapse two-column grid -> single column over image */
+      .hero-wrap {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 22px;
+        width: 100%;
+        text-align: left;
+      }
+
+      .hero-copy {
+        max-width: 780px;
+      }
+
+      /* the gradient-text looked light over photos; switch to solid + shadow */
+      .title {
+        -webkit-text-fill-color: initial;
+        color: var(--ink);
+        text-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      .subtitle {
+        color: #ececec;
+        font-size: clamp(1rem, 2.2vw, 1.25rem);
+        max-width: 60ch;
+      }
+
+      /* bottom meta bar */
+      .hero-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+      }
+
+      /* hide the old flyer card when using full-bleed hero */
+      .flyer {
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        .hero-wrap {
+          text-align: center;
+        }
+        .hero-meta {
+          justify-content: center;
+        }
       }
     </style>
   </head>
@@ -539,9 +614,12 @@
     </header>
 
     <!-- Hero -->
-    <section class="hero">
-      <div class="container hero-wrap">
-        <div>
+    <section class="hero hero--image">
+      <!-- dark overlay for readability -->
+      <div class="hero-overlay"></div>
+
+      <!-- <div class="container hero-wrap">
+        <div class="hero-copy">
           <span class="kicker">Exclusive • One Night Only</span>
           <h1 class="title">Album Listening Session</h1>
           <p class="subtitle">
@@ -549,6 +627,34 @@
             Experience.
           </p>
           <div class="hero-cta">
+            <a href="#rsvp" class="cta primary">
+              <i class="fa-regular fa-calendar-check"></i> Reserve your spot
+            </a>
+            <a href="#about" class="cta">
+              <i class="fa-solid fa-circle-play"></i> About the project
+            </a>
+          </div>
+        </div>
+        <div class="hero-meta">
+          <div class="pill">
+            <i class="fa-solid fa-location-dot"></i> HYDE PARK
+          </div>
+          <b>THU • 18:00</b>
+        </div>
+      </div> -->
+    </section>
+
+    <!-- Hero -->
+    <section class="hero1">
+      <div class="container hero-wrap1">
+        <div>
+          <span class="kicker1">Exclusive • One Night Only</span>
+          <h1 class="title1">Album Listening Session</h1>
+          <p class="subtitle1">
+            38 Talent Management presents The Amandla Listening Session
+            Experience.
+          </p>
+          <div class="hero-cta1">
             <a href="#rsvp" class="cta primary"
               ><i class="fa-regular fa-calendar-check"></i> Reserve your spot</a
             >
@@ -557,13 +663,13 @@
             >
           </div>
         </div>
-        <div class="flyer">
-          <!-- Replace these images with your own assets -->
+        <!-- <div class="flyer1">
+        
           <img src="/AMANDLA.png" alt="Album Artwork / Artist Portrait" />
-          <div class="sticker">
+          <div class="sticker1">
             <i class="fa-solid fa-headphones-simple"></i> Hi‑Fi Preview
           </div>
-          <div class="corner">
+          <div class="corner1">
             <div>
               <div class="pill">
                 <i class="fa-solid fa-location-dot"></i> HYDE PARK
@@ -571,7 +677,7 @@
             </div>
             <b>THU • 18:00</b>
           </div>
-        </div>
+        </div> -->
       </div>
     </section>
 
