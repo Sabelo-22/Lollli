@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSVP Admin — Dashboard</title>
+
+    <!-- Fonts / Icons (optional but pretty) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Firebase (compat builds to match your site) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
+
+    <style>
+      :root {
+        --bg: #0b0e14;
+        --bg-2: #0f1421;
+        --ink: #eaeaea;
+        --muted: #a7a7a7;
+        --gold: #e4b34e;
+        --accent: #0a84ff;
+        --card: rgba(255, 255, 255, 0.05);
+        --line: rgba(255, 255, 255, 0.12);
+        --r: 16px;
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial,
+          sans-serif;
+        background: radial-gradient(
+            1200px 800px at 10% 10%,
+            #10172a 0%,
+            transparent 60%
+          ),
+          radial-gradient(900px 700px at 90% 80%, #141b2f 0%, transparent 60%),
+          var(--bg);
+        color: var(--ink);
+        line-height: 1.55;
+        min-height: 100vh;
+      }
+      .container {
+        width: min(1200px, 94%);
+        margin-inline: auto;
+        padding: 28px 0;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0 22px;
+      }
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-weight: 800;
+      }
+      .brand b {
+        font-family: "Bebas Neue", system-ui;
+        font-size: 32px;
+        letter-spacing: 0.5px;
+      }
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .btn.primary {
+        background: linear-gradient(120deg, var(--gold), #f6d27a);
+        color: #141414;
+        border: none;
+        box-shadow: 0 8px 28px rgba(228, 179, 78, 0.25);
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 10px 0 20px;
+      }
+      @media (max-width: 900px) {
+        .cards {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 540px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+      .k {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .v {
+        font-family: "Bebas Neue";
+        font-size: 44px;
+        line-height: 0.9;
+      }
+
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 18px;
+        box-shadow: var(--shadow);
+        margin-top: 16px;
+      }
+      .panel h2 {
+        font-family: "Bebas Neue";
+        font-size: 36px;
+        margin-bottom: 8px;
+      }
+      .filters {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 10px 0 14px;
+      }
+      input[type="search"],
+      select {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        padding: 10px 12px;
+        border-radius: 12px;
+        outline: none;
+      }
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+      }
+      thead th {
+        background: #0f1421;
+        font-weight: 700;
+        text-align: left;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+      }
+      tbody td {
+        padding: 12px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+        vertical-align: top;
+      }
+      tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        font-size: 12px;
+      }
+      .badge.yes {
+        background: rgba(12, 180, 90, 0.14);
+        border-color: rgba(12, 180, 90, 0.5);
+      }
+      .badge.maybe {
+        background: rgba(228, 179, 78, 0.14);
+        border-color: rgba(228, 179, 78, 0.5);
+      }
+      .badge.no {
+        background: rgba(220, 80, 80, 0.14);
+        border-color: rgba(220, 80, 80, 0.5);
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="brand">
+          <i class="fa-solid fa-gauge-high"></i>
+          <b>RSVP Admin</b>
+        </div>
+        <div class="toolbar">
+          <button id="export-btn" class="btn primary">
+            <i class="fa-solid fa-file-excel"></i> Export Excel
+          </button>
+          <button id="refresh-btn" class="btn">
+            <i class="fa-solid fa-rotate"></i> Refresh
+          </button>
+        </div>
+      </header>
+
+      <!-- KPI cards -->
+      <div class="cards">
+        <div class="card">
+          <div class="k">Total submissions</div>
+          <div class="v" id="kpi-total">0</div>
+        </div>
+        <div class="card">
+          <div class="k">Yes</div>
+          <div class="v" id="kpi-yes">0</div>
+        </div>
+        <div class="card">
+          <div class="k">Maybe</div>
+          <div class="v" id="kpi-maybe">0</div>
+        </div>
+        <div class="card">
+          <div class="k">No</div>
+          <div class="v" id="kpi-no">0</div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="panel">
+        <h2>RSVP submissions</h2>
+        <div class="filters">
+          <input id="q" type="search" placeholder="Search name/email/phone…" />
+          <select id="status">
+            <option value="">All statuses</option>
+            <option value="Yes">Yes</option>
+            <option value="Maybe">Maybe</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div style="overflow: auto">
+          <table id="rsvp-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email / Phone</th>
+                <th>Guests</th>
+                <th>Status</th>
+                <th>Notes</th>
+                <th>Submitted</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr>
+                <td colspan="6" class="muted" style="padding: 16px">
+                  Loading…
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="right" style="margin-top: 10px">
+          <span class="muted" id="count-note">0 rows</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // === FIREBASE CONFIG (uses the same project you shared) ===
+      const firebaseConfig = {
+        apiKey: "AIzaSyAT2yqiArepzYR2B3fQemLhdbjMwbsi_aA",
+        authDomain: "cybernative-fc60c.firebaseapp.com",
+        projectId: "cybernative-fc60c",
+        storageBucket: "cybernative-fc60c.firebasestorage.app",
+        messagingSenderId: "862008823018",
+        appId: "1:862008823018:web:c6821169109c536a9b9b93",
+        measurementId: "G-KBGBRKR2H3",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      // === STATE ===
+      let allRows = []; // raw Firestore docs (normalized)
+      let viewRows = []; // filtered rows for table
+
+      // === HELPERS ===
+      const el = (id) => document.getElementById(id);
+      const safe = (v) => (v ?? "").toString();
+      const fmtDate = (ts) => {
+        if (!ts) return "";
+        const d = ts.toDate
+          ? ts.toDate()
+          : ts instanceof Date
+          ? ts
+          : new Date(ts);
+        return d.toLocaleString();
+      };
+
+      function renderKPIs(rows) {
+        const totals = rows.reduce(
+          (acc, r) => {
+            acc.total++;
+            const a = (r.attend || "").toLowerCase();
+            if (a === "yes") acc.yes++;
+            else if (a === "maybe") acc.maybe++;
+            else if (a === "no") acc.no++;
+            return acc;
+          },
+          { total: 0, yes: 0, maybe: 0, no: 0 }
+        );
+        el("kpi-total").textContent = totals.total;
+        el("kpi-yes").textContent = totals.yes;
+        el("kpi-maybe").textContent = totals.maybe;
+        el("kpi-no").textContent = totals.no;
+      }
+
+      function badge(attend) {
+        const a = (attend || "").toLowerCase();
+        const cls =
+          a === "yes"
+            ? "yes"
+            : a === "maybe"
+            ? "maybe"
+            : a === "no"
+            ? "no"
+            : "";
+        return `<span class="badge ${cls}">${safe(attend || "—")}</span>`;
+      }
+
+      function applyFilters() {
+        const q = el("q").value.trim().toLowerCase();
+        const s = el("status").value;
+        viewRows = allRows.filter((r) => {
+          const text = [r.name, r.email, r.phone, r.notes]
+            .map(safe)
+            .join(" ")
+            .toLowerCase();
+          const passQ = q ? text.includes(q) : true;
+          const passS = s ? r.attend === s : true;
+          return passQ && passS;
+        });
+        renderTable(viewRows);
+        renderKPIs(viewRows);
+        el("count-note").textContent = `${viewRows.length} row${
+          viewRows.length === 1 ? "" : "s"
+        }`;
+      }
+
+      function renderTable(rows) {
+        const tbody = el("rows");
+        if (!rows.length) {
+          tbody.innerHTML = `<tr><td colspan="6" class="muted" style="padding:16px">No submissions yet.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = rows
+          .map(
+            (r) => `
+        <tr>
+          <td><strong>${safe(r.name)}</strong></td>
+          <td>
+            <div>${safe(r.email)}</div>
+            <div class="muted">${safe(r.phone)}</div>
+          </td>
+          <td>${safe(r.guests ?? "")}</td>
+          <td>${badge(r.attend)}</td>
+          <td style="max-width:420px">${safe(r.notes)}</td>
+          <td class="muted">${fmtDate(r.submittedAt)}</td>
+        </tr>
+      `
+          )
+          .join("");
+      }
+
+      // Excel export (uses JSON to keep real Date types)
+      function exportExcel() {
+        if (!viewRows.length) {
+          alert("No data to export yet.");
+          return;
+        }
+        const data = viewRows.map((r) => ({
+          Name: r.name || "",
+          Email: r.email || "",
+          Phone: r.phone || "",
+          Guests: r.guests ?? "",
+          Status: r.attend || "",
+          Notes: r.notes || "",
+          SubmittedAt: r.submittedAt?.toDate
+            ? r.submittedAt.toDate()
+            : r.submittedAt || "",
+        }));
+        const ws = XLSX.utils.json_to_sheet(data);
+        // set some column widths
+        ws["!cols"] = [
+          { wch: 24 },
+          { wch: 30 },
+          { wch: 16 },
+          { wch: 8 },
+          { wch: 50 },
+          { wch: 22 },
+        ];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "RSVPs");
+        const stamp = new Date().toISOString().slice(0, 10);
+        XLSX.writeFile(wb, `rsvps_${stamp}.xlsx`);
+      }
+
+      // Manual refresh (re-run query once)
+      async function refreshOnce() {
+        const snap = await db
+          .collection("rsvps")
+          .orderBy("submittedAt", "desc")
+          .get();
+        allRows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        applyFilters();
+      }
+
+      // === INIT ===
+      // live updates
+      db.collection("rsvps")
+        .orderBy("submittedAt", "desc")
+        .onSnapshot(
+          (snap) => {
+            allRows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            applyFilters();
+          },
+          (err) => {
+            console.error("onSnapshot error:", err);
+            // fallback to one-time load
+            refreshOnce();
+          }
+        );
+
+      // UI hooks
+      el("q").addEventListener("input", applyFilters);
+      el("status").addEventListener("change", applyFilters);
+      el("export-btn").addEventListener("click", exportExcel);
+      el("refresh-btn").addEventListener("click", refreshOnce);
+    </script>
+  </body>
+</html>
