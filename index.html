@@ -117,20 +117,37 @@
         font-weight: 800;
         letter-spacing: 0.5px;
       }
+      /* Brand logo as an image (override the old .brand .mark circle styles) */
       .brand .mark {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: conic-gradient(
-          from 220deg,
-          var(--gold),
-          #fff0 20deg,
-          var(--gold)
-        );
-        display: grid;
-        place-items: center;
-        box-shadow: 0 10px 30px var(--shadow);
+        height: clamp(28px, 3.2vw, 42px);
+        width: auto; /* keep aspect ratio */
+        max-width: 180px; /* prevent super-wide logos */
+        object-fit: contain; /* no distortion */
+        display: block;
+
+        /* kill the old circle/gradient styles */
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+        place-items: initial;
       }
+
+      /* spacing + text size that scale nicely */
+      .brand {
+        gap: clamp(8px, 1.6vw, 14px);
+      }
+      .brand b {
+        font-size: clamp(22px, 3.2vw, 28px);
+      }
+
+      /* tiny screens: keep the logo tidy */
+      @media (max-width: 480px) {
+        .brand .mark {
+          height: 28px;
+          max-width: 140px;
+        }
+      }
+
       .brand b {
         font-family: "Bebas Neue", system-ui;
         font-size: 28px;
@@ -165,7 +182,7 @@
 
       /* Hero */
       .hero {
-        min-height: 92vh;
+        min-height: 100vh;
         display: grid;
         place-items: center;
         padding-top: 90px;
@@ -503,7 +520,12 @@
     <header id="header">
       <div class="container nav">
         <a href="#" class="brand">
-          <span class="mark"><i class="fa-solid fa-music"></i></span>
+          <!-- <span class="mark"><i class="fa-solid fa-music"></i></span> -->
+          <img
+            class="mark"
+            src="/LOLLIE LOGO.png"
+            alt="Album Artwork / Artist Portrait"
+          />
           <b>Listening Session</b>
         </a>
         <nav>
@@ -523,9 +545,8 @@
           <span class="kicker">Exclusive • One Night Only</span>
           <h1 class="title">Album Listening Session</h1>
           <p class="subtitle">
-            Pull up and lock in. Intimate studio vibes, hi‑fidelity playback,
-            and a live Q&A with the artist and producers. Dress code: clean.
-            Energy: unmatched.
+            38 Talent Management presents The Amandla Listening Session
+            Experience.
           </p>
           <div class="hero-cta">
             <a href="#rsvp" class="cta primary"
@@ -561,21 +582,23 @@
           <i class="fa-solid fa-calendar-day"></i>
           <div>
             <h4>Date</h4>
-            <p>Saturday, 28 September 2025</p>
+            <p>Thursday, 18 September 2025</p>
           </div>
         </div>
         <div class="info-tile">
           <i class="fa-solid fa-clock"></i>
           <div>
             <h4>Time</h4>
-            <p>Doors 19:00 • Playback 20:00</p>
+            <p>Doors open at 18:00. Experience begins at 19:00</p>
           </div>
         </div>
         <div class="info-tile">
           <i class="fa-solid fa-location-arrow"></i>
           <div>
             <h4>Venue</h4>
-            <p>Room 808 Studio, Braamfontein, Johannesburg</p>
+            <p>
+              Hyde Park. The exact location will be revealed closer to the event
+            </p>
           </div>
         </div>
         <div class="info-tile">
@@ -600,10 +623,11 @@
         <div class="about-card">
           <h3 style="margin-bottom: 10px">Story & Vibe</h3>
           <p style="color: var(--ink); opacity: 0.9">
-            Built in late nights and early flights — the tape is a journal:
-            scars, wins, and everything in between. Sonics range from dusty soul
-            chops to glossy 808s. If you’ve been day‑one, you’ll hear the growth
-            immediately.
+            Amandla” is Lolli Native’s heartfelt tribute to strength,
+            resilience, and the people who lift us when we fall. Dedicated to
+            his sister Amanda, a pillar of support and inspiration, the album
+            celebrates family, friends, and community who have shaped his
+            journey.
           </p>
           <div
             style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px"
@@ -620,37 +644,47 @@
           </div>
           <div style="margin-top: 18px">
             <!-- Optional embedded playlist preview (replace with your own link) -->
-            <iframe
+            <!-- <iframe
               style="
                 border-radius: 12px;
                 border: 1px solid rgba(255, 255, 255, 0.1);
               "
-              src="https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3?utm_source=generator"
+              src="https://open.spotify.com/track/6FuxFjQ53Yj8w4mMoRIpwh?si=2qkAKrxdSHGXAGP51kK3og"
               width="100%"
               height="152"
               frameborder="0"
               allowfullscreen=""
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               loading="lazy"
-            ></iframe>
+            ></iframe> -->
           </div>
         </div>
         <div class="about-card">
           <h3 style="margin-bottom: 10px">Tracklist (Sneak Peek)</h3>
-          <div class="track"><span>01. North Star</span><span>3:12</span></div>
-          <div class="track"><span>02. City Taxis</span><span>2:47</span></div>
+          <div class="track"><span>01. Amanda </span><span>3:12</span></div>
           <div class="track">
-            <span>03. Gold Teeth Interlude</span><span>1:06</span>
+            <span>02. Moya ft. Esethu Rethux kae lax </span><span>2:47</span>
           </div>
           <div class="track">
-            <span>04. Quarter to Fame (ft. TBA)</span><span>3:58</span>
-          </div>
-          <div class="track"><span>05. Dial Tone</span><span>3:21</span></div>
-          <div class="track">
-            <span>06. Midnight Receipts</span><span>2:59</span>
+            <span>03. Amanola FE. ATM </span><span>1:06</span>
           </div>
           <div class="track">
-            <span>07. Backseat Prayers</span><span>3:36</span>
+            <span>04. Wena ft. Anzo x Bugzito </span><span>3:58</span>
+          </div>
+          <div class="track">
+            <span>05. Too Late Ft. Prila Madlingazi </span><span>3:21</span>
+          </div>
+          <div class="track">
+            <span>06. Guess Whos Back Ft. Emtee </span><span>2:59</span>
+          </div>
+          <div class="track">
+            <span>07. Spaza Sfikile </span><span>3:36</span>
+          </div>
+          <div class="track">
+            <span>08. Bad Man Ft_ 25K x Jay Glaude </span><span>3:36</span>
+          </div>
+          <div class="track">
+            <span>09. Enkosi ft. Yamke </span><span>3:36</span>
           </div>
         </div>
       </div>
@@ -659,7 +693,7 @@
     <!-- Gallery -->
     <section id="gallery" class="gallery container">
       <div class="section-head" style="margin-bottom: 20px">
-        <h2>Gallery</h2>
+        <h2>Dress Code</h2>
         <p>
           Swap in your own cool pictures — press shots, studio candids, cover
           drafts.
@@ -667,16 +701,16 @@
       </div>
       <div class="grid">
         <div class="shot c-8">
-          <img src="/assets/images/studio-1.jpg" alt="Studio session" />
+          <img src="/AMANDLA.png" alt="Studio session" />
         </div>
         <div class="shot c-4">
-          <img src="/assets/images/artist-1.jpg" alt="Artist portrait" />
+          <img src="/li.jpg" alt="Artist portrait" />
         </div>
         <div class="shot c-6">
-          <img src="/assets/images/crowd-1.jpg" alt="Crowd" />
+          <img src="/ki.jpg" alt="Crowd" />
         </div>
         <div class="shot c-6">
-          <img src="/assets/images/turntable.jpg" alt="Vinyl turntable" />
+          <img src="/ui.jpg" alt="Vinyl turntable" />
         </div>
       </div>
     </section>
@@ -723,7 +757,7 @@
               <label for="phone">Phone (WhatsApp)</label>
               <input id="phone" name="phone" type="tel" placeholder="+27 …" />
             </div>
-            <div>
+            <!-- <div>
               <label for="guests">How many guests (incl. you)</label>
               <select id="guests" name="guests" required>
                 <option value="1">1</option>
@@ -731,7 +765,7 @@
                 <option value="3">3</option>
                 <option value="4">4</option>
               </select>
-            </div>
+            </div> -->
             <div>
               <label for="attend">Will you attend?</label>
               <select id="attend" name="attend" required>
