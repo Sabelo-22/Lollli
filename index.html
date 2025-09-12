@@ -707,7 +707,82 @@
         .hero1 {
           min-height: 90vh;
         }
-      }
+      }/* Make sure the hero is a positioning context */
+.hero,
+.hero--image {
+  position: relative;
+  min-height: 100vh; /* keep full screen */
+}
+
+/* Overlay should sit below UI controls */
+.hero .hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;          /* below the cue */
+  pointer-events: none;
+}
+
+/* Bottom-centered scroll cue */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(16px, 5vh, 40px);   /* responsive offset from bottom */
+  transform: translateX(-50%);
+  z-index: 2;                       /* above overlay */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;             /* clickable */
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+/* Optional: tidy the visuals */
+.scroll-cue .mouse {
+  width: 26px;
+  height: 44px;
+  border: 2px solid rgba(255,255,255,.6);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,.15);
+  backdrop-filter: blur(6px);
+}
+
+.scroll-cue .wheel {
+  display: block;
+  width: 4px;
+  height: 8px;
+  background: rgba(255,255,255,.95);
+  border-radius: 4px;
+  text-indent: -9999px; /* hide the word 'scroll' if you keep it */
+  overflow: hidden;
+  animation: wheel-drop 1.6s infinite;
+}
+
+.scroll-cue .arrow i {
+  font-size: 14px;
+  opacity: .9;
+  animation: arrow-bounce 1.6s infinite;
+}
+
+/* Animations (optional) */
+@keyframes wheel-drop {
+  0% { transform: translateY(-6px); opacity: .2; }
+  50% { transform: translateY(4px); opacity: 1; }
+  100% { transform: translateY(-6px); opacity: .2; }
+}
+@keyframes arrow-bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+/* Small screens: keep it tight */
+@media (max-width: 520px){
+  .scroll-cue { bottom: 18px; }
+}
+
     </style>
   </head>
   <body>
