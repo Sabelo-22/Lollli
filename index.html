@@ -539,6 +539,67 @@
         pointer-events: none;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* scroll cue */
+      .scroll-cue {
+        margin-top: 1rem;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.45rem;
+        color: var(--accent-dark);
+        text-decoration: none;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+      .mouse {
+        width: 22px;
+        height: 34px;
+        border: 2px solid var(--accent-dark);
+        border-radius: 999px;
+        position: relative;
+      }
+      .wheel {
+        position: absolute;
+        left: 50%;
+        top: 7px;
+        width: 3px;
+        height: 6px;
+        margin-left: -1.5px;
+        background: var(--accent-dark);
+        border-radius: 2px;
+        animation: wheel 1.6s ease-in-out infinite;
+      }
+      @keyframes wheel {
+        0% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        70% {
+          transform: translateY(8px);
+          opacity: 0.2;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .arrow {
+        font-size: 1rem;
+        animation: bounce 1.6s ease-in-out infinite;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(3px);
+        }
+      }
       /* collapse two-column grid -> single column over image */
       .hero-wrap {
         position: relative;
@@ -673,6 +734,10 @@
     <section class="hero hero--image">
       <!-- dark overlay for readability -->
       <div class="hero-overlay"></div>
+      <a href="#info1" class="scroll-cue" aria-label="Scroll to details">
+        <div class="mouse"><span class="wheel"></span></div>
+        <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
+      </a>
 
       <!-- <div class="container hero-wrap">
         <div class="hero-copy">
@@ -701,7 +766,7 @@
     </section>
 
     <!-- Hero -->
-    <section class="hero1">
+    <section class="hero1" id="info1">
       <div class="container hero-wrap1">
         <div>
           <span class="kicker1">Exclusive • One Night Only</span>
