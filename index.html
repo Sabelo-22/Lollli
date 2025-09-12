@@ -24,6 +24,7 @@
         --ring: rgba(230, 212, 194, 0.7);
         --shadow: rgba(0, 0, 0, 0.1);
         --accent-dark: #3c342f;
+        --ok: #1b8f4a;
       }
 
       * {
@@ -59,10 +60,10 @@
         overflow-x: hidden;
       }
 
-      /* ====== FULL-SCREEN "MAGICAL" HERO ====== */
+      /* ====== FULL-SCREEN "MAGICAL" HERO (unchanged vibe) ====== */
       .hero {
         position: relative;
-        min-height: 100svh; /* full screen, safe on mobile chrome */
+        min-height: 100svh;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -71,8 +72,6 @@
         overflow: hidden;
         isolation: isolate;
       }
-
-      /* soft ambient blobs */
       .ambient {
         position: absolute;
         inset: -25vh -25vw;
@@ -129,8 +128,6 @@
           transform: translate3d(-4%, 3%, 0) scale(1.02);
         }
       }
-
-      /* starfield sparkles (canvas sits behind text) */
       #stars {
         position: absolute;
         inset: 0;
@@ -139,8 +136,6 @@
         opacity: 0.75;
         mix-blend-mode: soft-light;
       }
-
-      /* shimmer sweep */
       .hero::after {
         content: "";
         position: absolute;
@@ -154,7 +149,6 @@
         transform: translateX(-120%);
         animation: shimmer 5s ease-in-out 1.2s infinite;
         mix-blend-mode: soft-light;
-        pointer-events: none;
       }
       @keyframes shimmer {
         0% {
@@ -164,7 +158,6 @@
           transform: translateX(120%);
         }
       }
-
       .hero-inner {
         max-width: 920px;
         width: 100%;
@@ -180,7 +173,6 @@
           transform: translateY(0);
         }
       }
-
       .logo {
         width: 132px;
         height: 132px;
@@ -222,7 +214,6 @@
           transform: translateY(0);
         }
       }
-
       h1 {
         font-family: "Playfair Display", serif;
         font-size: clamp(2.1rem, 6vw, 4rem);
@@ -253,8 +244,6 @@
           width: min(120px, 30vw);
         }
       }
-
-      /* scroll cue */
       .scroll-cue {
         margin-top: 1rem;
         display: inline-flex;
@@ -312,7 +301,7 @@
         }
       }
 
-      /* ====== CONTENT WRAPPER ====== */
+      /* ====== CONTENT WRAP ====== */
       .wrap {
         max-width: 1024px;
         width: 100%;
@@ -320,11 +309,10 @@
         padding: clamp(14px, 2vw, 24px);
       }
 
-      /* info + form layout */
       .grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: clamp(14px, 2.2vw, 20px);
+        gap: clamp(14px, 2.2vw, 22px);
       }
       @media (max-width: 900px) {
         .grid {
@@ -346,6 +334,7 @@
         box-shadow: 0 18px 44px var(--shadow);
       }
 
+      /* ===== INFO CARD (left) ===== */
       .info-item {
         display: flex;
         align-items: flex-start;
@@ -373,54 +362,147 @@
         color: var(--muted);
       }
 
-      /* ====== RSVP (hidden until scroll) ====== */
-      #rsvp.card {
+      /* ===== PROFESSIONAL RSVP FORM (right) ===== */
+      .form-card {
+        /* elegant gradient border */
+        background: linear-gradient(#fff, #fff) padding-box,
+          linear-gradient(135deg, var(--secondary), var(--primary)) border-box;
+        border: 1px solid transparent;
+        border-radius: 18px;
+        box-shadow: 0 16px 48px var(--shadow);
         opacity: 0;
         transform: translateY(16px) scale(0.995);
         visibility: hidden;
       }
-      #rsvp.card.show {
+      .form-card.show {
         opacity: 1;
         transform: translateY(0) scale(1);
         visibility: visible;
         transition: opacity 0.6s ease, transform 0.6s ease;
       }
 
-      .rsvp-form h2 {
+      .form-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+        padding-bottom: 0.75rem;
+      }
+      .form-title {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
         font-family: "Playfair Display", serif;
-        font-size: 1.6rem;
         color: var(--accent-dark);
-        text-align: center;
-        margin-bottom: 1rem;
+        font-size: 1.6rem;
       }
-      .form-group {
-        margin-bottom: 1rem;
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.85rem;
+        color: var(--accent-dark);
+        background: linear-gradient(180deg, var(--primary), var(--secondary));
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
       }
-      .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: var(--ink);
+
+      /* grid inside the form */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
       }
-      .form-group input,
-      .form-group select {
+      @media (max-width: 680px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* floating fields */
+      .field {
+        position: relative;
+      }
+      .field input,
+      .field select {
         width: 100%;
-        padding: 12px 14px;
-        border: 1px solid rgba(0, 0, 0, 0.12);
         border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
         background: #fff;
+        padding: 20px 14px 10px 14px;
         font: inherit;
         transition: border 0.18s ease, box-shadow 0.18s ease,
-          transform 0.18s ease;
+          transform 0.18s ease, background 0.18s ease;
       }
-      .form-group input:focus,
-      .form-group select:focus {
+      .field input::placeholder {
+        color: transparent;
+      }
+      .field select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M5 7l5 6 5-6' fill='none' stroke='%233c342f' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 40px;
+      }
+      .field label {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        padding: 0 6px;
+        background: #fff;
+        color: var(--muted);
+        font-size: 0.95rem;
+        transform-origin: left top;
+        transition: transform 0.18s ease, color 0.18s ease, top 0.18s ease;
+        pointer-events: none;
+      }
+      .field input:focus,
+      .field select:focus {
         outline: none;
         border-color: transparent;
         box-shadow: 0 0 0 5px var(--ring), 0 10px 22px var(--shadow);
         transform: translateY(-1px);
       }
+      /* float label when focused or has value */
+      .field input:focus + label,
+      .field input:not(:placeholder-shown) + label,
+      .field select:focus + label,
+      .field select.filled + label {
+        top: -8px;
+        transform: scale(0.85);
+        color: var(--accent-dark);
+      }
 
+      /* inline help / error */
+      .help {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-top: 0.35rem;
+      }
+      .error {
+        display: none;
+        font-size: 0.85rem;
+        color: #b83a3a;
+        margin-top: 0.35rem;
+      }
+      .field.invalid .error {
+        display: block;
+      }
+      .field.invalid input,
+      .field.invalid select {
+        border-color: #e09d9d;
+        box-shadow: 0 0 0 3px rgba(184, 58, 58, 0.12);
+      }
+
+      /* button */
+      .actions {
+        margin-top: 0.4rem;
+      }
       button {
         width: 100%;
         padding: 14px 16px;
@@ -444,7 +526,6 @@
       button:active {
         transform: translateY(0);
       }
-      /* glow ring */
       button::after {
         content: "";
         position: absolute;
@@ -466,7 +547,6 @@
           --ang: 360deg;
         }
       }
-      /* ripple */
       button .ripple {
         position: absolute;
         border-radius: 999px;
@@ -486,11 +566,57 @@
         }
       }
 
-      footer {
-        text-align: center;
-        padding: 1.25rem 1rem 1.6rem;
+      .footnote {
+        margin-top: 0.65rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         color: var(--muted);
-        font-size: 0.95rem;
+        font-size: 0.9rem;
+      }
+
+      /* success state card */
+      .success {
+        display: none;
+        text-align: center;
+        padding: 1rem 0.25rem 0.5rem;
+      }
+      .success.show {
+        display: block;
+        animation: fadeIn 0.4s ease both;
+      }
+      .success .check {
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #dff5e9, #f2fff7);
+        color: var(--ok);
+        border: 1px solid rgba(27, 143, 74, 0.25);
+        box-shadow: 0 10px 26px var(--shadow);
+        margin-bottom: 0.65rem;
+      }
+      .success h3 {
+        font-family: "Playfair Display", serif;
+        color: var(--accent-dark);
+        font-size: 1.4rem;
+        margin-bottom: 0.4rem;
+      }
+      .success p {
+        color: var(--muted);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       /* reduced motion */
@@ -519,20 +645,20 @@
         .card {
           padding: 14px;
         }
+        .form-title {
+          font-size: 1.45rem;
+        }
       }
     </style>
   </head>
   <body>
     <!-- FULL-SCREEN HERO -->
     <section class="hero" id="top">
-      <!-- magical ambient blobs -->
       <div class="ambient" aria-hidden="true">
         <div class="blob"></div>
         <div class="blob b2"></div>
         <div class="blob b3"></div>
       </div>
-
-      <!-- subtle starfield -->
       <canvas id="stars" aria-hidden="true"></canvas>
 
       <div class="hero-inner">
@@ -564,7 +690,6 @@
               <p>Dia Studios Hydepark</p>
             </div>
           </div>
-
           <div class="info-item">
             <i class="fas fa-calendar-alt" aria-hidden="true"></i>
             <div class="info-text">
@@ -572,7 +697,6 @@
               <p>18 July 2025</p>
             </div>
           </div>
-
           <div class="info-item">
             <i class="fas fa-clock" aria-hidden="true"></i>
             <div class="info-text">
@@ -580,7 +704,6 @@
               <p>18:00 for 19:00 hours</p>
             </div>
           </div>
-
           <div class="info-item">
             <i class="fas fa-music" aria-hidden="true"></i>
             <div class="info-text">
@@ -590,49 +713,114 @@
           </div>
         </section>
 
-        <!-- RSVP (hidden until you scroll) -->
-        <section id="rsvp" class="card rsvp-form">
-          <h2>RSVP</h2>
+        <!-- PROFESSIONAL RSVP (reveals on scroll) -->
+        <section id="rsvp" class="card form-card">
+          <div class="form-header">
+            <div class="form-title">
+              <i class="fa-solid fa-envelope-open-text"></i> <span>RSVP</span>
+            </div>
+            <span class="badge"><i class="fa-solid fa-lock"></i> Secure</span>
+          </div>
+
           <form id="rsvpForm" novalidate>
-            <div class="form-group">
-              <label for="name">Full Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                autocomplete="name"
-                placeholder="Your full name"
-              />
+            <div class="form-grid">
+              <!-- Full Name -->
+              <div class="field" data-name>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder=" "
+                  required
+                  autocomplete="name"
+                  aria-describedby="nameHelp"
+                />
+                <label for="name">Full Name</label>
+                <div class="help" id="nameHelp">
+                  As it should appear on your pass.
+                </div>
+                <div class="error">Please enter your full name.</div>
+              </div>
+
+              <!-- Email -->
+              <div class="field" data-email>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder=" "
+                  required
+                  autocomplete="email"
+                  aria-describedby="emailHelp"
+                />
+                <label for="email">Email Address</label>
+                <div class="help" id="emailHelp">
+                  We’ll send confirmation to this address.
+                </div>
+                <div class="error">Enter a valid email address.</div>
+              </div>
+
+              <!-- Guests -->
+              <!-- <div class="field" data-guests>
+                <select id="guests" name="guests" required>
+                  <option value="" disabled selected hidden></option>
+                  <option value="1">1 Person</option>
+                  <option value="2">2 People</option>
+                  <option value="3">3 People</option>
+                  <option value="4">4 People</option>
+                </select>
+                <label for="guests">Number of Guests</label>
+                <div class="error">Select how many are attending.</div>
+              </div> -->
+
+              <!-- (Optional) Notes -->
+              <div class="field" data-notes>
+                <input
+                  id="notes"
+                  name="notes"
+                  type="text"
+                  placeholder=" "
+                  autocomplete="off"
+                />
+                <label for="notes">Notes (optional)</label>
+                <div class="help">E.g., dietary needs or accessibility.</div>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="email">Email Address</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                autocomplete="email"
-                placeholder="you@example.com"
-              />
+
+            <div class="actions">
+              <button type="submit" id="submitBtn">
+                <span>Confirm Attendance</span>
+              </button>
+              <div class="footnote">
+                <i class="fa-regular fa-shield"></i>
+                <span
+                  >Your details are kept private and used only for this
+                  event.</span
+                >
+              </div>
             </div>
-            <div class="form-group">
-              <label for="guests">Number of Guests</label>
-              <select id="guests" name="guests" required>
-                <option value="">Select...</option>
-                <option value="1">1 Person</option>
-                <option value="2">2 People</option>
-                <option value="3">3 People</option>
-                <option value="4">4 People</option>
-              </select>
-            </div>
-            <button type="submit" id="submitBtn">Confirm Attendance</button>
           </form>
+
+          <!-- Success state (replaces form on submit) -->
+          <div
+            class="success"
+            id="successState"
+            role="status"
+            aria-live="polite"
+          >
+            <div class="check"><i class="fa-solid fa-check fa-lg"></i></div>
+            <h3>RSVP Received</h3>
+            <p>
+              We’ve emailed your confirmation. See you at the listening session.
+            </p>
+          </div>
         </section>
       </main>
 
       <footer>
-        <p>© 2025 Lolli Native · All rights reserved</p>
+        <p style="text-align: center; color: var(--muted); margin-top: 12px">
+          © 2025 Lolli Native · All rights reserved
+        </p>
       </footer>
     </div>
 
@@ -643,7 +831,7 @@
     ></canvas>
 
     <script>
-      /* ===== canvas: starfield behind hero ===== */
+      /* ===== starfield behind hero ===== */
       const stars = document.getElementById("stars");
       const sCtx = stars.getContext("2d");
       let starArr = [];
@@ -655,16 +843,15 @@
           y: Math.random() * stars.height,
           r: Math.random() * 1.6 + 0.3,
           a: Math.random() * Math.PI * 2,
-          s: 0.2 + Math.random() * 0.8,
         }));
       }
       function drawStars() {
         sCtx.clearRect(0, 0, stars.width, stars.height);
         starArr.forEach((st) => {
           st.a += 0.02;
-          const twinkle = ((Math.sin(st.a) + 1) / 2) * 0.6 + 0.2;
+          const tw = ((Math.sin(st.a) + 1) / 2) * 0.6 + 0.2;
           sCtx.beginPath();
-          sCtx.arc(st.x, st.y, st.r * twinkle, 0, Math.PI * 2);
+          sCtx.arc(st.x, st.y, st.r * tw, 0, Math.PI * 2);
           sCtx.fillStyle = "rgba(255,255,255,0.9)";
           sCtx.fill();
         });
@@ -674,27 +861,34 @@
       resizeStars();
       drawStars();
 
-      /* ===== show RSVP when scrolled into view ===== */
-      const rsvp = document.getElementById("rsvp");
-      const revealRSVP = () => {
+      /* ===== reveal RSVP form on scroll ===== */
+      const rsvpCard = document.getElementById("rsvp");
+      (function () {
         if (!("IntersectionObserver" in window)) {
-          rsvp.classList.add("show");
+          rsvpCard.classList.add("show");
           return;
         }
         const io = new IntersectionObserver(
           (entries) => {
             entries.forEach((e) => {
               if (e.isIntersecting) {
-                rsvp.classList.add("show");
-                io.unobserve(rsvp);
+                rsvpCard.classList.add("show");
+                io.unobserve(rsvpCard);
               }
             });
           },
           { threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
         );
-        io.observe(rsvp);
-      };
-      revealRSVP();
+        io.observe(rsvpCard);
+      })();
+
+      /* ===== enhance select label state ===== */
+      const guests = document.getElementById("guests");
+      function syncSelectLabel() {
+        guests.classList.toggle("filled", !!guests.value);
+      }
+      guests.addEventListener("change", syncSelectLabel);
+      syncSelectLabel();
 
       /* ===== button ripple ===== */
       const btn = document.getElementById("submitBtn");
@@ -710,7 +904,7 @@
         circle.addEventListener("animationend", () => circle.remove());
       });
 
-      /* ===== confetti on submit (tiny & classy) ===== */
+      /* ===== tasteful confetti for success ===== */
       const confettiCanvas = document.getElementById("confetti");
       const ctx = confettiCanvas.getContext("2d");
       let confettiPieces = [],
@@ -724,7 +918,7 @@
 
       function makeConfetti() {
         const colors = ["#2b2622", "#E6D4C2", "#F4EBE2"];
-        for (let i = 0; i < 90; i++) {
+        for (let i = 0; i < 80; i++) {
           confettiPieces.push({
             x: Math.random() * confettiCanvas.width,
             y: -10 - (Math.random() * confettiCanvas.height) / 3,
@@ -741,14 +935,14 @@
           confettiActive = false;
           confettiPieces = [];
           ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        }, 1700);
+        }, 1600);
       }
       function drawConfetti() {
         if (!confettiActive) return;
         ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
         confettiPieces.forEach((p) => {
-          p.y += p.s * 2.2;
-          p.x += Math.sin(p.a) * 1.3;
+          p.y += p.s * 2.1;
+          p.x += Math.sin(p.a) * 1.2;
           p.a += p.va;
           ctx.save();
           ctx.translate(p.x, p.y);
@@ -763,48 +957,65 @@
         requestAnimationFrame(drawConfetti);
       }
 
-      /* ===== form handling ===== */
-      document
-        .getElementById("rsvpForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const name = document.getElementById("name").value.trim();
-          const email = document.getElementById("email").value.trim();
-          const guests = document.getElementById("guests").value;
+      /* ===== form validation + success state (professional, no alerts) ===== */
+      const form = document.getElementById("rsvpForm");
+      const success = document.getElementById("successState");
 
-          if (!name || !email || !guests) {
-            alert("Please fill in all fields");
-            return;
-          }
+      function setError(fieldEl, hasError) {
+        fieldEl.classList.toggle("invalid", hasError);
+      }
 
-          const button = this.querySelector("button");
-          const original = button.textContent;
-          button.textContent = "Sending…";
-          button.disabled = true;
-          button.style.opacity = 0.85;
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const name = document.getElementById("name");
+        const email = document.getElementById("email");
 
-          setTimeout(() => {
-            alert(
-              "Thank you for your RSVP! We look forward to seeing you at the listening session."
-            );
-            this.reset();
-            button.textContent = original;
-            button.disabled = false;
-            button.style.opacity = 1;
-            makeConfetti();
-          }, 1100);
-        });
+        let bad = false;
+        // name
+        if (!name.value.trim()) {
+          setError(name.parentElement, true);
+          bad = true;
+        } else {
+          setError(name.parentElement, false);
+        }
+        // email
+        const mailOK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+        if (!mailOK) {
+          setError(email.parentElement, true);
+          bad = true;
+        } else {
+          setError(email.parentElement, false);
+        }
+        // guests
+        if (!guests.value) {
+          setError(guests.parentElement, true);
+          bad = true;
+        } else {
+          setError(guests.parentElement, false);
+        }
 
-      /* ===== tiny touch lift on cards ===== */
-      document.querySelectorAll(".card").forEach((c) => {
-        c.addEventListener(
-          "touchstart",
-          () => (c.style.transform = "translateY(-3px) scale(1.005)"),
-          { passive: true }
-        );
-        c.addEventListener("touchend", () => (c.style.transform = ""), {
-          passive: true,
-        });
+        if (bad) return;
+
+        // pretend submit
+        btn.disabled = true;
+        const old = btn.textContent;
+        btn.textContent = "Sending…";
+
+        setTimeout(() => {
+          // swap form for success state
+          form.style.display = "none";
+          success.classList.add("show");
+          btn.disabled = false;
+          btn.textContent = old;
+          makeConfetti();
+        }, 900);
+      });
+
+      // remove errors on input
+      ["name", "email", "notes"].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", () => setError(el.parentElement, false));
       });
     </script>
   </body>
