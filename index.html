@@ -786,6 +786,134 @@
 @media (max-width: 520px){
   .scroll-cue { bottom: 18px; }
 }
+/* ---------- VIBES: subtle motion + hovers (add at the end of your <style>) ---------- */
+
+/* Respect users who hate motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Header: slight blur + shadow on scroll already exists; add link underline slide */
+nav a {
+  position: relative;
+}
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -6px;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold), #f6d27a);
+  transition: width .3s ease;
+}
+nav a:hover::after { width: 100%; }
+
+/* Brand: give the logo a gentle tilt + shine */
+.brand .mark {
+  transition: transform .35s ease, box-shadow .35s ease, filter .35s ease;
+  will-change: transform;
+}
+.brand:hover .mark {
+  transform: rotate(-4deg) scale(1.04);
+  box-shadow: 0 14px 40px rgba(228, 179, 78, .25);
+  filter: saturate(1.1);
+}
+
+/* CTA / Buttons: lift + shimmer on hover */
+.btn, .cta {
+  position: relative;
+  transition: transform .2s ease, box-shadow .3s ease, background .3s ease, border-color .3s ease;
+  will-change: transform;
+}
+.btn:hover, .cta:hover { transform: translateY(-2px); }
+.cta.primary, .btn-primary {
+  box-shadow: 0 10px 30px rgba(228,179,78,.22);
+}
+.cta.primary:hover, .btn-primary:hover {
+  box-shadow: 0 16px 40px rgba(228,179,78,.33);
+}
+.cta.primary::before, .btn-primary::before {
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(120deg, rgba(255,255,255,.0) 0%, rgba(255,255,255,.25) 40%, rgba(255,255,255,0) 60%);
+  transform: translateX(-120%);
+  transition: transform .6s ease;
+  pointer-events:none;
+}
+.cta.primary:hover::before, .btn-primary:hover::before { transform: translateX(120%); }
+
+/* Pills: pop on hover */
+.pill {
+  transition: transform .25s ease, border-color .25s ease, background .25s ease;
+}
+.pill:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.24); background: rgba(255,255,255,.09); }
+
+/* Cards & tiles: lift + glow */
+.card, .about-card, .info-tile {
+  transition: transform .35s var(--trans), box-shadow .35s var(--trans), border-color .35s var(--trans), background .35s var(--trans);
+  will-change: transform;
+}
+.card:hover, .about-card:hover, .info-tile:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.07);
+  box-shadow: 0 26px 70px var(--shadow);
+}
+
+/* Gallery shots: add soft overlay on hover (image already scales) */
+.shot::after {
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(60% 60% at 70% 30%, rgba(0,0,0,.0), rgba(0,0,0,.35));
+  opacity: 0; transition: opacity .5s ease;
+}
+.shot:hover::after { opacity: 1; }
+
+/* Inputs: hover feedback + valid glow */
+input:hover, select:hover, textarea:hover { border-color: rgba(255,255,255,.22); }
+input:valid, textarea:valid { border-color: rgba(128, 255, 180, .6); }
+
+/* Hero (image): gentle ken-burns zoom for depth */
+.hero--image {
+  background-position: center;
+  background-size: 108%;
+  animation: hero-zoom 24s ease-in-out infinite alternate;
+}
+@keyframes hero-zoom {
+  0% { background-size: 103%; filter: saturate(1); }
+  100% { background-size: 110%; filter: saturate(1.05); }
+}
+
+/* Scroll cue: make it a bit more visible on hover */
+.scroll-cue { transition: transform .25s ease, opacity .25s ease; }
+.scroll-cue:hover { transform: translateX(-50%) translateY(-2px); opacity: 1; }
+
+/* Flyer tilt (both versions if you use .flyer1 elsewhere) */
+.flyer, .flyer1 {
+  transform-style: preserve-3d;
+  perspective: 900px;
+  transition: transform .18s ease, box-shadow .3s ease;
+}
+.flyer:hover, .flyer1:hover { box-shadow: 0 26px 70px rgba(0,0,0,.5); }
+
+/* Scroll-reveal base (JS toggles .is-in) */
+.reveal {
+  opacity: 0; transform: translateY(18px) scale(.98);
+  filter: blur(6px);
+}
+.reveal.is-in {
+  opacity: 1; transform: translateY(0) scale(1);
+  filter: blur(0); transition: opacity .8s ease, transform .8s ease, filter .8s ease;
+}
+
+/* Tiny gold accent ring on icons inside tiles */
+.info-tile i {
+  text-shadow: 0 0 18px rgba(228,179,78,.35);
+}
+
+/* Footer pills: same hover as pills */
+footer .pill { transition: transform .25s ease, background .25s ease; }
+footer .pill:hover { transform: translateY(-2px); background: rgba(255,255,255,.09); }
+
 
     </style>
   </head>
@@ -906,7 +1034,7 @@ Experience every verse, every beat, every moment.</p>
             shares his story, honors his roots, and celebrates the unity and
             love that make us stronger.
           </p>
-          <div
+          <!-- <div
             style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px"
           >
             <span class="pill"
@@ -918,7 +1046,7 @@ Experience every verse, every beat, every moment.</p>
             <span class="pill"
               ><i class="fa-solid fa-mug-hot"></i> Drinks on deck</span
             >
-          </div>
+          </div> -->
           <div style="margin-top: 18px">
             <!-- Optional embedded playlist preview (replace with your own link) -->
                <!-- <iframe
@@ -1271,5 +1399,63 @@ Experience every verse, every beat, every moment.</p>
         }
       });
     </script>
+    <script>
+  // ---- Reveal on scroll (adds .is-in when visible) ----
+  (function() {
+    const els = document.querySelectorAll(
+      '.info-tile, .about-card, .shot, .card, .flyer, .title, .subtitle, .hero-cta .cta'
+    );
+    els.forEach(el => el.classList.add('reveal'));
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          en.target.classList.add('is-in');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -10% 0px' });
+
+    els.forEach(el => io.observe(el));
+  })();
+
+  // ---- Magnetic hover for buttons (desktop only, super light) ----
+  (function(){
+    if (!window.matchMedia('(hover:hover)').matches) return;
+    const mags = document.querySelectorAll('.btn, .cta');
+    mags.forEach(el => {
+      const strength = 12; // px
+      el.style.willChange = 'transform';
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) - 0.5;
+        const y = ((e.clientY - r.top) / r.height) - 0.5;
+        el.style.transform = `translate(${x*strength}px, ${y*strength}px)`;
+      });
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = '';
+      });
+    });
+  })();
+
+  // ---- Flyer tilt (works for .flyer and .flyer1 if present) ----
+  (function(){
+    if (!window.matchMedia('(hover:hover)').matches) return;
+    const cards = document.querySelectorAll('.flyer, .flyer1');
+    cards.forEach(card => {
+      const max = 8; // deg
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `rotateY(${x*max}deg) rotateX(${ -y*max }deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+  })();
+</script>
+
   </body>
 </html>
