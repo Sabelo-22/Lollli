@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RSVP Admin — Dashboard</title>
 
-    <!-- Fonts / Icons (optional but pretty) -->
+    <!-- Fonts / Icons -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Bebas+Neue&display=swap"
       rel="stylesheet"
@@ -15,7 +15,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
 
-    <!-- Firebase (compat builds to match your site) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
@@ -92,12 +92,20 @@
         background: transparent;
         color: var(--ink);
         cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.1);
       }
       .btn.primary {
         background: linear-gradient(120deg, var(--gold), #f6d27a);
         color: #141414;
         border: none;
         box-shadow: 0 8px 28px rgba(228, 179, 78, 0.25);
+      }
+      .btn.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(228, 179, 78, 0.35);
       }
       .btn:disabled {
         opacity: 0.6;
@@ -167,6 +175,12 @@
         padding: 10px 12px;
         border-radius: 12px;
         outline: none;
+        transition: all 0.2s ease;
+      }
+      input[type="search"]:focus,
+      select:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(228, 179, 78, 0.2);
       }
       table {
         width: 100%;
@@ -221,6 +235,44 @@
         display: flex;
         gap: 10px;
         align-items: center;
+      }
+
+      /* Toast notification */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: var(--shadow);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+      .toast.visible {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .toast.success {
+        border-left: 4px solid #0cb45a;
+      }
+      .toast.error {
+        border-left: 4px solid #dc5050;
+      }
+      .toast-icon {
+        font-size: 20px;
+      }
+      .toast.success .toast-icon {
+        color: #0cb45a;
+      }
+      .toast.error .toast-icon {
+        color: #dc5050;
       }
     </style>
   </head>
@@ -302,8 +354,14 @@
       </div>
     </div>
 
+    <!-- Toast notification -->
+    <div id="toast" class="toast">
+      <i id="toast-icon" class="toast-icon"></i>
+      <span id="toast-message"></span>
+    </div>
+
     <script>
-      // === FIREBASE CONFIG (uses the same project you shared) ===
+      // === FIREBASE CONFIG ===
       const firebaseConfig = {
         apiKey: "AIzaSyAT2yqiArepzYR2B3fQemLhdbjMwbsi_aA",
         authDomain: "cybernative-fc60c.firebaseapp.com",
@@ -313,7 +371,14 @@
         appId: "1:862008823018:web:c6821169109c536a9b9b93",
         measurementId: "G-KBGBRKR2H3",
       };
-      firebase.initializeApp(firebaseConfig);
+
+      // Initialize Firebase
+      try {
+        firebase.initializeApp(firebaseConfig);
+      } catch (error) {
+        console.error("Firebase initialization error:", error);
+      }
+
       const db = firebase.firestore();
 
       // === STATE ===
@@ -332,6 +397,25 @@
           : new Date(ts);
         return d.toLocaleString();
       };
+
+      // Toast notification function
+      function showToast(message, type = "success") {
+        const toast = el("toast");
+        const toastIcon = el("toast-icon");
+        const toastMessage = el("toast-message");
+
+        toast.className = `toast ${type}`;
+        toastIcon.className = `toast-icon fa-solid ${
+          type === "success" ? "fa-circle-check" : "fa-circle-exclamation"
+        }`;
+        toastMessage.textContent = message;
+
+        toast.classList.add("visible");
+
+        setTimeout(() => {
+          toast.classList.remove("visible");
+        }, 3000);
+      }
 
       function renderKPIs(rows) {
         const totals = rows.reduce(
@@ -408,70 +492,134 @@
           .join("");
       }
 
-      // Excel export (uses JSON to keep real Date types)
+      // Excel export function
       function exportExcel() {
         if (!viewRows.length) {
-          alert("No data to export yet.");
+          showToast("No data to export yet.", "error");
           return;
         }
-        const data = viewRows.map((r) => ({
-          Name: r.name || "",
-          Email: r.email || "",
-          Phone: r.phone || "",
-          Guests: r.guests ?? "",
-          Status: r.attend || "",
-          Notes: r.notes || "",
-          SubmittedAt: r.submittedAt?.toDate
-            ? r.submittedAt.toDate()
-            : r.submittedAt || "",
-        }));
-        const ws = XLSX.utils.json_to_sheet(data);
-        // set some column widths
-        ws["!cols"] = [
-          { wch: 24 },
-          { wch: 30 },
-          { wch: 16 },
-          { wch: 8 },
-          { wch: 50 },
-          { wch: 22 },
-        ];
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "RSVPs");
-        const stamp = new Date().toISOString().slice(0, 10);
-        XLSX.writeFile(wb, `rsvps_${stamp}.xlsx`);
+
+        // Check if XLSX library is available
+        if (typeof XLSX === "undefined") {
+          showToast("Excel library not loaded. Please try again.", "error");
+          console.error("XLSX library is not defined");
+          return;
+        }
+
+        try {
+          // Prepare data for export
+          const data = viewRows.map((r) => ({
+            Name: r.name || "",
+            Email: r.email || "",
+            Phone: r.phone || "",
+            Guests: r.guests ?? "",
+            Status: r.attend || "",
+            Notes: r.notes || "",
+            "Submitted At": r.submittedAt?.toDate
+              ? r.submittedAt.toDate().toLocaleString()
+              : r.submittedAt || "",
+          }));
+
+          // Create worksheet
+          const ws = XLSX.utils.json_to_sheet(data);
+
+          // Set column widths
+          const colWidths = [
+            { wch: 24 }, // Name
+            { wch: 30 }, // Email
+            { wch: 16 }, // Phone
+            { wch: 8 }, // Guests
+            { wch: 10 }, // Status
+            { wch: 50 }, // Notes
+            { wch: 22 }, // Submitted At
+          ];
+          ws["!cols"] = colWidths;
+
+          // Create workbook
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "RSVPs");
+
+          // Generate filename with date
+          const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+          const filename = `rsvps_${stamp}.xlsx`;
+
+          // Export to Excel
+          XLSX.writeFile(wb, filename);
+
+          // Show success message
+          showToast(`Exported ${viewRows.length} records to ${filename}`);
+        } catch (error) {
+          console.error("Error exporting to Excel:", error);
+          showToast(
+            "Error exporting to Excel. Please check console for details.",
+            "error"
+          );
+        }
       }
 
       // Manual refresh (re-run query once)
       async function refreshOnce() {
-        const snap = await db
-          .collection("rsvps")
-          .orderBy("submittedAt", "desc")
-          .get();
-        allRows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        applyFilters();
+        try {
+          const snap = await db
+            .collection("rsvps")
+            .orderBy("submittedAt", "desc")
+            .get();
+          allRows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          applyFilters();
+          showToast("Data refreshed successfully");
+        } catch (error) {
+          console.error("Error refreshing data:", error);
+          showToast("Error refreshing data", "error");
+        }
       }
 
       // === INIT ===
-      // live updates
-      db.collection("rsvps")
-        .orderBy("submittedAt", "desc")
-        .onSnapshot(
-          (snap) => {
-            allRows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            applyFilters();
-          },
-          (err) => {
-            console.error("onSnapshot error:", err);
-            // fallback to one-time load
-            refreshOnce();
-          }
-        );
+      // Check if XLSX library loaded
+      function checkXLSX() {
+        if (typeof XLSX === "undefined") {
+          console.error("XLSX library failed to load");
+          showToast("Excel export functionality not available", "error");
+          el("export-btn").disabled = true;
+          el("export-btn").innerHTML =
+            '<i class="fa-solid fa-triangle-exclamation"></i> Export Unavailable';
+        }
+      }
+
+      // Set up live updates
+      try {
+        db.collection("rsvps")
+          .orderBy("submittedAt", "desc")
+          .onSnapshot(
+            (snap) => {
+              allRows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+              applyFilters();
+            },
+            (err) => {
+              console.error("onSnapshot error:", err);
+              showToast(
+                "Live updates disabled. Using manual refresh.",
+                "error"
+              );
+              // fallback to one-time load
+              refreshOnce();
+            }
+          );
+      } catch (error) {
+        console.error("Firebase connection error:", error);
+        showToast("Database connection error", "error");
+      }
 
       // UI hooks
       el("q").addEventListener("input", applyFilters);
       el("status").addEventListener("change", applyFilters);
       el("export-btn").addEventListener("click", exportExcel);
       el("refresh-btn").addEventListener("click", refreshOnce);
+
+      // Check if XLSX library loaded after page fully loads
+      window.addEventListener("load", checkXLSX);
+
+      // Also check after a delay in case the library loads slowly
+      setTimeout(checkXLSX, 2000);
     </script>
   </body>
 </html>
