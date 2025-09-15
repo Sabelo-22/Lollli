@@ -18,9 +18,9 @@
       rel="stylesheet"
     />
 
-    <!-- Firebase (compat builds to keep it simple) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <!-- Firebase (compat builds) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -35,6 +35,7 @@
         --line: #1c2333; /* grid line */
         --gold: #e4b34e; /* accent */
         --accent: #0a84ff; /* neon blue */
+        --accent-dark: var(--accent); /* define to avoid undefined var */
         --shadow: rgba(0, 0, 0, 0.35);
         --blur: blur(10px);
         --r: 16px;
@@ -121,37 +122,28 @@
         font-weight: 800;
         letter-spacing: 0.5px;
       }
-      /* Brand logo as an image (override the old .brand .mark circle styles) */
       .brand .mark {
         height: clamp(28px, 3.2vw, 42px);
-        width: auto; /* keep aspect ratio */
-        max-width: 180px; /* prevent super-wide logos */
-        object-fit: contain; /* no distortion */
+        width: auto;
+        max-width: 180px;
+        object-fit: contain;
         display: block;
-
-        /* kill the old circle/gradient styles */
         border-radius: 0;
         background: none;
         box-shadow: none;
-        place-items: initial;
       }
-
-      /* spacing + text size that scale nicely */
       .brand {
         gap: clamp(8px, 1.6vw, 14px);
       }
       .brand b {
         font-size: clamp(22px, 3.2vw, 28px);
       }
-
-      /* tiny screens: keep the logo tidy */
       @media (max-width: 480px) {
         .brand .mark {
           height: 28px;
           max-width: 140px;
         }
       }
-
       .brand b {
         font-family: "Bebas Neue", system-ui;
         font-size: 28px;
@@ -183,100 +175,6 @@
         border: none;
         box-shadow: 0 8px 28px rgba(228, 179, 78, 0.25);
       }
-
-      /* Hero */
-      /* .hero1 {
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding-top: 90px;
-        position: relative;
-        overflow: hidden;
-      }
-      .hero-wrap1 {
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 48px;
-        align-items: center;
-      }
-      @media (max-width: 900px) {
-        .hero-wrap1 {
-          grid-template-columns: 1fr;
-          gap: 28px;
-          text-align: center;
-        }
-      }
-      .kicker1 {
-        color: var(--gold);
-        letter-spacing: 0.15em;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-      .title1 {
-        font-family: "Bebas Neue", system-ui;
-        font-size: clamp(44px, 8vw, 88px);
-        line-height: 1.02;
-        margin: 0.15em 0;
-        background: linear-gradient(180deg, #fff, #c9d7ff 50%, #aab7ff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .subtitle1 {
-        max-width: 60ch;
-        color: var(--muted);
-        font-size: 1.1rem;
-      }
-      .hero-cta1 {
-        margin-top: 28px;
-        display: flex;
-        gap: 14px;
-        flex-wrap: wrap;
-      }
-
-      /* Flyer card */
-      .flyer1 {
-        position: relative;
-        aspect-ratio: 4/5;
-        border-radius: 24px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 20px 60px var(--shadow);
-      }
-      .flyer1 img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        filter: saturate(1.1) contrast(1.05);
-      }
-      .sticker1 {
-        position: absolute;
-        right: 14px;
-        top: 14px;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: var(--blur);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        padding: 8px 12px;
-        border-radius: 10px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .corner1 {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        padding: 14px 16px;
-        background: linear-gradient(0deg, rgba(0, 0, 0, 0.65), transparent);
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: end;
-      }
-      .corner1 b {
-        font-size: 20px;
-      }
-      */
 
       /* Event Info */
       .info {
@@ -319,15 +217,13 @@
         margin-top: 4px;
       }
       .info-tile h4 {
-  font-size: 13px;
-  letter-spacing: 0.18em;
-  font-weight: 700; /* or 800/900 if your font supports it */
-  color: "white";
-  text-transform: uppercase;
-}
-
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        font-weight: 700;
+        color: white;
+        text-transform: uppercase;
+      }
       .info-tile p {
-        /* font-weight: 700; */
         color: var(--muted);
       }
 
@@ -341,7 +237,6 @@
         display: flex;
         justify-content: space-between;
         align-items: end;
-        /* gap: 16px; */
       }
       .section-head h2 {
         font-family: "Bebas Neue";
@@ -520,20 +415,31 @@
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.12);
-      } /* Full-bleed hero image */
+      }
+      /* pill1 used in the flyer */
+      .pill1 {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        font-size: 12px;
+        color: var(--ink);
+      }
+
+      /* Full-bleed hero image */
       .hero {
         min-height: 100vh;
-        padding-top: 120px; /* room for fixed header */
+        padding-top: 120px;
         display: grid;
         place-items: center;
         position: relative;
       }
-
       .hero--image {
         background: url("/AMANDLA.png") center / cover no-repeat;
       }
-
-      /* overlay for text contrast */
       .hero--image .hero-overlay {
         position: absolute;
         inset: 0;
@@ -545,11 +451,6 @@
         );
         pointer-events: none;
       }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
       /* scroll cue */
       .scroll-cue {
         margin-top: 1rem;
@@ -607,7 +508,8 @@
           transform: translateY(3px);
         }
       }
-      /* collapse two-column grid -> single column over image */
+
+      /* hero content */
       .hero-wrap {
         position: relative;
         z-index: 1;
@@ -617,25 +519,18 @@
         width: 100%;
         text-align: left;
       }
-
       .hero-copy {
         max-width: 780px;
       }
-
-      /* the gradient-text looked light over photos; switch to solid + shadow */
       .title {
-        -webkit-text-fill-color: initial;
         color: var(--ink);
         text-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
       }
-
       .subtitle {
         color: #ececec;
         font-size: clamp(1rem, 2.2vw, 1.25rem);
         max-width: 60ch;
       }
-
-      /* bottom meta bar */
       .hero-meta {
         display: flex;
         justify-content: space-between;
@@ -643,12 +538,9 @@
         gap: 12px;
         margin-top: 8px;
       }
-
-      /* hide the old flyer card when using full-bleed hero */
       .flyer {
         display: none;
       }
-
       @media (max-width: 900px) {
         .hero-wrap {
           text-align: center;
@@ -656,33 +548,29 @@
         .hero-meta {
           justify-content: center;
         }
-      } /* Center the section like a hero */
+      }
+
+      /* Hero 2 */
       .hero1 {
-        /* account for fixed header vibe; adjust 90px if yours differs */
         min-height: calc(100vh - 90px);
         display: grid;
-        place-items: center; /* centers content both ways */
+        place-items: center;
         padding: clamp(40px, 8vh, 80px) 0;
         position: relative;
         text-align: center;
       }
-
-      /* keep your inner container tidy */
       .hero-wrap1 {
         width: min(1100px, 92%);
         margin-inline: auto;
         display: grid;
         gap: 14px;
       }
-
-      /* typography to match your main hero */
       .kicker1 {
         color: var(--gold);
         letter-spacing: 0.15em;
         font-weight: 700;
         text-transform: uppercase;
       }
-
       .title1 {
         font-family: "Bebas Neue", system-ui, sans-serif;
         font-size: clamp(42px, 8vw, 92px);
@@ -690,14 +578,12 @@
         color: var(--ink);
         text-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
       }
-
       .subtitle1 {
         color: var(--muted);
         font-size: clamp(1rem, 2.2vw, 1.25rem);
         max-width: 80ch;
         margin-inline: auto;
       }
-
       .hero-cta1 {
         margin-top: 18px;
         display: flex;
@@ -705,216 +591,248 @@
         justify-content: center;
         flex-wrap: wrap;
       }
-
-      /* mobile niceties */
       @media (max-width: 600px) {
         .hero1 {
           min-height: 90vh;
         }
-      }/* Make sure the hero is a positioning context */
-.hero,
-.hero--image {
-  position: relative;
-  min-height: 100vh; /* keep full screen */
-}
+      }
 
-/* Overlay should sit below UI controls */
-.hero .hero-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;          /* below the cue */
-  pointer-events: none;
-}
+      /* Bottom-centered scroll cue positioning */
+      .hero,
+      .hero--image {
+        position: relative;
+        min-height: 100vh;
+      }
+      .hero .hero-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+      .scroll-cue {
+        position: absolute;
+        left: 50%;
+        bottom: clamp(16px, 5vh, 40px);
+        transform: translateX(-50%);
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        pointer-events: auto;
+        opacity: 0.9;
+      }
+      .scroll-cue .mouse {
+        width: 26px;
+        height: 44px;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(6px);
+      }
+      .scroll-cue .wheel {
+        display: block;
+        width: 4px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 4px;
+        text-indent: -9999px;
+        overflow: hidden;
+        animation: wheel-drop 1.6s infinite;
+      }
+      .scroll-cue .arrow i {
+        font-size: 14px;
+        opacity: 0.9;
+        animation: arrow-bounce 1.6s infinite;
+      }
+      @keyframes wheel-drop {
+        0% {
+          transform: translateY(-6px);
+          opacity: 0.2;
+        }
+        50% {
+          transform: translateY(4px);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-6px);
+          opacity: 0.2;
+        }
+      }
+      @keyframes arrow-bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(4px);
+        }
+      }
+      @media (max-width: 520px) {
+        .scroll-cue {
+          bottom: 18px;
+        }
+      }
 
-/* Bottom-centered scroll cue */
-.scroll-cue {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(16px, 5vh, 40px);   /* responsive offset from bottom */
-  transform: translateX(-50%);
-  z-index: 2;                       /* above overlay */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  pointer-events: auto;             /* clickable */
-  text-decoration: none;
-  opacity: 0.9;
-}
-
-/* Optional: tidy the visuals */
-.scroll-cue .mouse {
-  width: 26px;
-  height: 44px;
-  border: 2px solid rgba(255,255,255,.6);
-  border-radius: 16px;
-  display: grid;
-  place-items: center;
-  background: rgba(0,0,0,.15);
-  backdrop-filter: blur(6px);
-}
-
-.scroll-cue .wheel {
-  display: block;
-  width: 4px;
-  height: 8px;
-  background: rgba(255,255,255,.95);
-  border-radius: 4px;
-  text-indent: -9999px; /* hide the word 'scroll' if you keep it */
-  overflow: hidden;
-  animation: wheel-drop 1.6s infinite;
-}
-
-.scroll-cue .arrow i {
-  font-size: 14px;
-  opacity: .9;
-  animation: arrow-bounce 1.6s infinite;
-}
-
-/* Animations (optional) */
-@keyframes wheel-drop {
-  0% { transform: translateY(-6px); opacity: .2; }
-  50% { transform: translateY(4px); opacity: 1; }
-  100% { transform: translateY(-6px); opacity: .2; }
-}
-@keyframes arrow-bounce {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(4px); }
-}
-
-/* Small screens: keep it tight */
-@media (max-width: 520px){
-  .scroll-cue { bottom: 18px; }
-}
-/* ---------- VIBES: subtle motion + hovers (add at the end of your <style>) ---------- */
-
-/* Respect users who hate motion */
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
-}
-
-/* Header: slight blur + shadow on scroll already exists; add link underline slide */
-nav a {
-  position: relative;
-}
-nav a::after {
-  content: "";
-  position: absolute;
-  left: 0; bottom: -6px;
-  width: 0; height: 2px;
-  background: linear-gradient(90deg, var(--gold), #f6d27a);
-  transition: width .3s ease;
-}
-nav a:hover::after { width: 100%; }
-
-/* Brand: give the logo a gentle tilt + shine */
-.brand .mark {
-  transition: transform .35s ease, box-shadow .35s ease, filter .35s ease;
-  will-change: transform;
-}
-.brand:hover .mark {
-  transform: rotate(-4deg) scale(1.04);
-  box-shadow: 0 14px 40px rgba(228, 179, 78, .25);
-  filter: saturate(1.1);
-}
-
-/* CTA / Buttons: lift + shimmer on hover */
-.btn, .cta {
-  position: relative;
-  transition: transform .2s ease, box-shadow .3s ease, background .3s ease, border-color .3s ease;
-  will-change: transform;
-}
-.btn:hover, .cta:hover { transform: translateY(-2px); }
-.cta.primary, .btn-primary {
-  box-shadow: 0 10px 30px rgba(228,179,78,.22);
-}
-.cta.primary:hover, .btn-primary:hover {
-  box-shadow: 0 16px 40px rgba(228,179,78,.33);
-}
-.cta.primary::before, .btn-primary::before {
-  content:"";
-  position:absolute; inset:0;
-  background: linear-gradient(120deg, rgba(255,255,255,.0) 0%, rgba(255,255,255,.25) 40%, rgba(255,255,255,0) 60%);
-  transform: translateX(-120%);
-  transition: transform .6s ease;
-  pointer-events:none;
-}
-.cta.primary:hover::before, .btn-primary:hover::before { transform: translateX(120%); }
-
-/* Pills: pop on hover */
-.pill {
-  transition: transform .25s ease, border-color .25s ease, background .25s ease;
-}
-.pill:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.24); background: rgba(255,255,255,.09); }
-
-/* Cards & tiles: lift + glow */
-.card, .about-card, .info-tile {
-  transition: transform .35s var(--trans), box-shadow .35s var(--trans), border-color .35s var(--trans), background .35s var(--trans);
-  will-change: transform;
-}
-.card:hover, .about-card:hover, .info-tile:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255,255,255,.18);
-  background: rgba(255,255,255,.07);
-  box-shadow: 0 26px 70px var(--shadow);
-}
-
-/* Gallery shots: add soft overlay on hover (image already scales) */
-.shot::after {
-  content:"";
-  position:absolute; inset:0;
-  background: radial-gradient(60% 60% at 70% 30%, rgba(0,0,0,.0), rgba(0,0,0,.35));
-  opacity: 0; transition: opacity .5s ease;
-}
-.shot:hover::after { opacity: 1; }
-
-/* Inputs: hover feedback + valid glow */
-input:hover, select:hover, textarea:hover { border-color: rgba(255,255,255,.22); }
-input:valid, textarea:valid { border-color: rgba(83, 79, 79, 0.6); }
-
-/* Hero (image): gentle ken-burns zoom for depth */
-/* .hero--image {
-  background-position: center;
-  background-size: 108%;
-  animation: hero-zoom 24s ease-in-out infinite alternate;
-} */
-/* @keyframes hero-zoom {
-  0% { background-size: 103%; filter: saturate(1); }
-  100% { background-size: 110%; filter: saturate(1.05); }
-} */
-
-/* Scroll cue: make it a bit more visible on hover */
-.scroll-cue { transition: transform .25s ease, opacity .25s ease; }
-.scroll-cue:hover { transform: translateX(-50%) translateY(-2px); opacity: 1; }
-
-/* Flyer tilt (both versions if you use .flyer1 elsewhere) */
-.flyer, .flyer1 {
-  transform-style: preserve-3d;
-  perspective: 900px;
-  transition: transform .18s ease, box-shadow .3s ease;
-}
-.flyer:hover, .flyer1:hover { box-shadow: 0 26px 70px rgba(0,0,0,.5); }
-
-/* Scroll-reveal base (JS toggles .is-in) */
-.reveal {
-  opacity: 0; transform: translateY(18px) scale(.98);
-  filter: blur(6px);
-}
-.reveal.is-in {
-  opacity: 1; transform: translateY(0) scale(1);
-  filter: blur(0); transition: opacity .8s ease, transform .8s ease, filter .8s ease;
-}
-
-/* Tiny gold accent ring on icons inside tiles */
-.info-tile i {
-  text-shadow: 0 0 18px rgba(228,179,78,.35);
-}
-
-/* Footer pills: same hover as pills */
-footer .pill { transition: transform .25s ease, background .25s ease; }
-footer .pill:hover { transform: translateY(-2px); background: rgba(255,255,255,.09); }
-
-
+      /* Motion + hovers */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      nav a {
+        position: relative;
+      }
+      nav a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--gold), #f6d27a);
+        transition: width 0.3s ease;
+      }
+      nav a:hover::after {
+        width: 100%;
+      }
+      .brand .mark {
+        transition: transform 0.35s ease, box-shadow 0.35s ease,
+          filter 0.35s ease;
+        will-change: transform;
+      }
+      .brand:hover .mark {
+        transform: rotate(-4deg) scale(1.04);
+        box-shadow: 0 14px 40px rgba(228, 179, 78, 0.25);
+        filter: saturate(1.1);
+      }
+      .btn,
+      .cta {
+        position: relative;
+        transition: transform 0.2s ease, box-shadow 0.3s ease,
+          background 0.3s ease, border-color 0.3s ease;
+        will-change: transform;
+      }
+      .btn:hover,
+      .cta:hover {
+        transform: translateY(-2px);
+      }
+      .cta.primary,
+      .btn-primary {
+        box-shadow: 0 10px 30px rgba(228, 179, 78, 0.22);
+      }
+      .cta.primary:hover,
+      .btn-primary:hover {
+        box-shadow: 0 16px 40px rgba(228, 179, 78, 0.33);
+      }
+      .cta.primary::before,
+      .btn-primary::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          120deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.25) 40%,
+          rgba(255, 255, 255, 0) 60%
+        );
+        transform: translateX(-120%);
+        transition: transform 0.6s ease;
+        pointer-events: none;
+      }
+      .cta.primary:hover::before,
+      .btn-primary:hover::before {
+        transform: translateX(120%);
+      }
+      .pill {
+        transition: transform 0.25s ease, border-color 0.25s ease,
+          background 0.25s ease;
+      }
+      .pill:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.24);
+        background: rgba(255, 255, 255, 0.09);
+      }
+      .card,
+      .about-card,
+      .info-tile {
+        transition: transform 0.35s var(--trans), box-shadow 0.35s var(--trans),
+          border-color 0.35s var(--trans), background 0.35s var(--trans);
+        will-change: transform;
+      }
+      .card:hover,
+      .about-card:hover,
+      .info-tile:hover {
+        transform: translateY(-6px);
+        border-color: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.07);
+        box-shadow: 0 26px 70px var(--shadow);
+      }
+      .shot::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          60% 60% at 70% 30%,
+          rgba(0, 0, 0, 0),
+          rgba(0, 0, 0, 0.35)
+        );
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      .shot:hover::after {
+        opacity: 1;
+      }
+      input:hover,
+      select:hover,
+      textarea:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+      input:valid,
+      textarea:valid {
+        border-color: rgba(83, 79, 79, 0.6);
+      }
+      .scroll-cue {
+        transition: transform 0.25s ease, opacity 0.25s ease;
+      }
+      .scroll-cue:hover {
+        transform: translateX(-50%) translateY(-2px);
+        opacity: 1;
+      }
+      .flyer,
+      .flyer1 {
+        transform-style: preserve-3d;
+        perspective: 900px;
+        transition: transform 0.18s ease, box-shadow 0.3s ease;
+      }
+      .flyer:hover,
+      .flyer1:hover {
+        box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5);
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+        filter: blur(6px);
+      }
+      .reveal.is-in {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+        transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+      }
+      .info-tile i {
+        text-shadow: 0 0 18px rgba(228, 179, 78, 0.35);
+      }
+      footer .pill {
+        transition: transform 0.25s ease, background 0.25s ease;
+      }
+      footer .pill:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.09);
+      }
     </style>
   </head>
   <body>
@@ -922,13 +840,12 @@ footer .pill:hover { transform: translateY(-2px); background: rgba(255,255,255,.
     <header id="header">
       <div class="container nav">
         <a href="#" class="brand">
-          <!-- <span class="mark"><i class="fa-solid fa-music"></i></span> -->
           <img
             class="mark"
             src="/LOLLIE LOGO.png"
             alt="Album Artwork / Artist Portrait"
           />
-          <b>Amandla Listening Exprience</b>
+          <b>Amandla Listening Experience</b>
         </a>
         <!-- <nav>
           <ul>
@@ -942,7 +859,6 @@ footer .pill:hover { transform: translateY(-2px); background: rgba(255,255,255,.
 
     <!-- Hero -->
     <section class="hero hero--image">
-      <!-- dark overlay for readability -->
       <div class="hero-overlay"></div>
       <a href="#info1" class="scroll-cue" aria-label="Scroll to details">
         <div class="mouse"><span class="wheel">scroll</span></div>
@@ -950,18 +866,24 @@ footer .pill:hover { transform: translateY(-2px); background: rgba(255,255,255,.
       </a>
     </section>
 
-    <!-- Hero -->
+    <!-- Hero 2 -->
     <section class="hero1" id="info1">
       <div class="container hero-wrap1">
         <div>
-          <!-- <span class="kicker1">Exclusive • One Night Only</span> -->
           <span class="kicker1"> 38 Talent Management presents </span>
           <h1 class="title1">Amandla Listening Experience</h1>
-          <p class="subtitle1">Join Lolli Native as he unveils his highly anticipated second studio album. Born and raised in Nyanga, his lyrics blend Xhosa lyricism with the grit of the streets, transforming lived experience into art that resonates far beyond Nyanga.
-
-Crowned Buddha of the Year, Lolli curates an intimate evening of rhythm, storytelling, and presence, a milestone defined by culture, creativity, and authenticity.
-
-Experience every verse, every beat, every moment.</p>
+          <p class="subtitle1">
+            Join Lolli Native as he unveils his highly anticipated second studio
+            album. Born and raised in Nyanga, his lyrics blend Xhosa lyricism
+            with the grit of the streets, transforming lived experience into art
+            that resonates far beyond Nyanga.
+            <br /><br />
+            Crowned Buddha of the Year, Lolli curates an intimate evening of
+            rhythm, storytelling, and presence, a milestone defined by culture,
+            creativity, and authenticity.
+            <br /><br />
+            Experience every verse, every beat, every moment.
+          </p>
           <div class="hero-cta1">
             <a href="#rsvp" class="cta primary"
               ><i class="fa-regular fa-calendar-check"></i> Reserve your spot</a
@@ -1014,15 +936,12 @@ Experience every verse, every beat, every moment.</p>
     <section id="about" class="about container">
       <div class="section-head">
         <h2>The Project</h2>
-        <!-- <p class="tag">
-          <i class="fa-solid fa-circle"></i> genre: hip hop 
-        </p> -->
       </div>
       <div class="about-grid">
         <div class="about-card">
           <h3 style="margin-bottom: 10px">The Sound and Storytelling</h3>
           <p style="color: var(--ink); opacity: 0.9">
-            Amandla” is Lolli Native’s heartfelt tribute to strength,
+            “Amandla” is Lolli Native’s heartfelt tribute to strength,
             resilience, and the people who lift us when we fall. Dedicated to
             his sister Amanda, a pillar of support and inspiration, the album
             celebrates family, friends, and community who have shaped his
@@ -1034,119 +953,51 @@ Experience every verse, every beat, every moment.</p>
             shares his story, honors his roots, and celebrates the unity and
             love that make us stronger.
           </p>
-          <!-- <div
-            style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px"
-          >
-            <span class="pill"
-              ><i class="fa-solid fa-record-vinyl"></i> Analog chain</span
-            >
-            <span class="pill"
-              ><i class="fa-solid fa-shield-halved"></i> No phones policy</span
-            >
-            <span class="pill"
-              ><i class="fa-solid fa-mug-hot"></i> Drinks on deck</span
-            >
-          </div> -->
           <div style="margin-top: 18px">
-            <!-- Optional embedded playlist preview (replace with your own link) -->
-               <!-- <iframe
+            <iframe
               style="
                 border-radius: 12px;
                 border: 1px solid rgba(255, 255, 255, 0.1);
               "
-              src="https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3?utm_source=generator"
+              src="https://open.spotify.com/embed/track/6FuxFjQ53Yj8w4mMoRIpwh?utm_source=generator"
               width="100%"
-              height="152"
+              height="85"
               frameborder="0"
-              allowfullscreen=""
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               loading="lazy"
-            ></iframe> -->
-           <iframe
-  style="border-radius:12px;border:1px solid rgba(255,255,255,0.1);"
-  src="https://open.spotify.com/embed/track/6FuxFjQ53Yj8w4mMoRIpwh?utm_source=generator"
-  width="100%"
-  height="85"
-  frameborder="0"
-  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-  loading="lazy">
-</iframe>
-
-
-            <!-- <iframe
-              style="
-                border-radius: 12px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-              "
-              src="https://open.spotify.com/track/7r6PigmGzlB3YPB7wvBBbi?si=0640c2c73efe49fd"
-              width="100%"
-              height="152"
-              frameborder="0"
-              allowfullscreen=""
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-            ></iframe> -->
+            >
+            </iframe>
           </div>
         </div>
         <div class="about-card">
           <h3 style="margin-bottom: 10px">Tracklist (Sneak Peek)</h3>
-          <div class="track"><span>01. Amanda </span><span>3:12</span></div>
+          <div class="track"><span>01. Amanda</span><span>3:12</span></div>
           <div class="track">
-            <span>02.Moya
-ft. Esethi Siwe ft kae Wax
-</span><span>2:47</span>
+            <span>02. Moya ft. Esethi Siwe, Kae Wax</span><span>2:47</span>
           </div>
           <div class="track">
-            <span>03. Amandla ft. ATM
- </span><span>1:06</span>
+            <span>03. Amandla ft. ATM</span><span>1:06</span>
           </div>
           <div class="track">
-            <span>04. Wena ft. Anzo x Bugzito </span><span>3:58</span>
+            <span>04. Wena ft. Anzo x Bugzito</span><span>3:58</span>
           </div>
           <div class="track">
-            <span>05.Too Late Ft. Phila Madlingozi
- </span><span>3:21</span>
+            <span>05. Too Late ft. Phila Madlingozi</span><span>3:21</span>
           </div>
           <div class="track">
-            <span>06. Guess Whos Back Ft. Emtee </span><span>2:59</span>
+            <span>06. Guess Who’s Back ft. Emtee</span><span>2:59</span>
+          </div>
+          <div class="track"><span>07. Spaza</span><span>3:36</span></div>
+          <div class="track"><span>08. Sifikile</span><span>3:36</span></div>
+          <div class="track">
+            <span>09. Bad Man ft. 25K x Jay Claude</span><span>3:36</span>
           </div>
           <div class="track">
-            <span>07. Spaza  </span><span>3:36</span>
-          </div>
-          <div class="track">
-            <span>08. Sifikile  </span><span>3:36</span>
-          </div>
-          <div class="track">
-            <span>09. Bad Man Ft_ 25K x Jay Glaude </span><span>3:36</span>
-          </div>
-          <div class="track">
-            <span>10. Enkosi ft. Yamke x Lerato Lechaba </span><span>3:36</span>
+            <span>10. Enkosi ft. Yamke x Lerato Lechaba</span><span>3:36</span>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- Gallery -->
-    <!-- <section id="gallery" class="gallery container">
-      <div class="section-head" style="margin-bottom: 20px">
-        <h2>Dress Code</h2>
-        <p>please adhere to the theme or entrance will be denied</p>
-      </div>
-      <div class="grid">
-        <div class="shot c-8">
-          <img src="/AMANDLA.png" alt="Studio session" />
-        </div>
-        <div class="shot c-4">
-          <img src="/li.jpg" alt="Artist portrait" />
-        </div>
-        <div class="shot c-6">
-          <img src="/ki.jpg" alt="Crowd" />
-        </div>
-        <div class="shot c-6">
-          <img src="/ui.jpg" alt="Vinyl turntable" />
-        </div>
-      </div>
-    </section> -->
 
     <!-- RSVP -->
     <section id="rsvp" class="rsvp">
@@ -1162,7 +1013,10 @@ ft. Esethi Siwe ft kae Wax
             RSVP
           </h2>
           <p style="color: var(--muted); margin-bottom: 14px">
-            Kindly confirm your attendance by RSVP. This invitation is exclusively yours and may not be transferred. To help you step into the evening with intention, a tailored style guide and the theme of the night will be shared with you in the days ahead.
+            Kindly confirm your attendance by RSVP. This invitation is
+            exclusively yours and may not be transferred. To help you step into
+            the evening with intention, a tailored style guide and the theme of
+            the night will be shared with you in the days ahead.
           </p>
           <form id="rsvp-form">
             <div>
@@ -1189,15 +1043,7 @@ ft. Esethi Siwe ft kae Wax
               <label for="phone">Phone (WhatsApp)</label>
               <input id="phone" name="phone" type="tel" placeholder="+27 …" />
             </div>
-            <!-- <div>
-              <label for="guests">How many guests (incl. you)</label>
-              <select id="guests" name="guests" required>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </div> -->
+            <!-- Guests is intentionally commented out -->
             <div>
               <label for="attend">Will you attend?</label>
               <select id="attend" name="attend" required>
@@ -1221,13 +1067,9 @@ ft. Esethi Siwe ft kae Wax
               <button class="btn btn-primary" type="submit">
                 <i class="fa-regular fa-paper-plane"></i> Submit RSVP
               </button>
-              <!-- <a
-                class="btn btn-ghost"
-                id="calendar-link"
-                href="#"
-                target="_blank"
-                ><i class="fa-regular fa-calendar-plus"></i> Add to Calendar</a
-              > -->
+              <!-- <a class="btn btn-ghost" id="calendar-link" href="#" target="_blank">
+                <i class="fa-regular fa-calendar-plus"></i> Add to Calendar
+              </a> -->
             </div>
             <p
               id="rsvp-status"
@@ -1235,20 +1077,73 @@ ft. Esethi Siwe ft kae Wax
             ></p>
           </form>
         </div>
+
         <div class="card">
-         <div class="flyer1">
-          <!-- Replace these images with your own assets -->
-          <img src="/cybernative.png" alt="Album Artwork / Artist Portrait" />
-          <div class="sticker1">
-            <i class="fa-solid fa-headphones-simple"></i> Hi‑Fi Preview
-          </div>
-          <div class="corner1">
-            <div>
-              <div class="pill1">
-                <i class="fa-solid fa-location-dot"></i> HYDE PARK
-              </div>
+          <div
+            class="flyer1"
+            style="
+              position: relative;
+              aspect-ratio: 4/5;
+              border-radius: 24px;
+              overflow: hidden;
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              box-shadow: 0 20px 60px var(--shadow);
+            "
+          >
+            <img
+              src="/cybernative.png"
+              alt="Album Artwork / Artist Portrait"
+              style="
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: saturate(1.1) contrast(1.05);
+              "
+            />
+            <div
+              class="sticker1"
+              style="
+                position: absolute;
+                right: 14px;
+                top: 14px;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                padding: 8px 12px;
+                border-radius: 10px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              "
+            >
+              <i class="fa-solid fa-headphones-simple"></i> Hi-Fi Preview
             </div>
-            <b>THU • 18:00</b>
+            <div
+              class="corner1"
+              style="
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                padding: 14px 16px;
+                background: linear-gradient(
+                  0deg,
+                  rgba(0, 0, 0, 0.65),
+                  transparent
+                );
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: end;
+              "
+            >
+              <div>
+                <div class="pill1">
+                  <i class="fa-solid fa-location-dot"></i> HYDE PARK
+                </div>
+              </div>
+              <b>THU • 18:00</b>
+            </div>
           </div>
         </div>
       </div>
@@ -1267,201 +1162,199 @@ ft. Esethi Siwe ft kae Wax
       >
         <small>© 2025 Cybersec Clinique – All Rights Reserved</small>
         <div style="display: flex; gap: 14px; align-items: center">
-         <a href="https://cybersec-clinique.co.za/" target="_blank" class="brand">
-          <!-- <span class="mark"><i class="fa-solid fa-music"></i></span> -->
-          <img
-            class="mark"
-            src="/cyber.png"
-            alt="Album Artwork / Artist Portrait" 
-
-          />
-        </a>
-           <a href="#" class="brand">
-          <!-- <span class="mark"><i class="fa-solid fa-music"></i></span> -->
-          <img
-            class="mark"
-            src="/LOLLIE LOGO.png"
-            alt="Album Artwork / Artist Portrait"
-          />
-          <b>Amandla Listening Exprience</b>
-        </a>
-          <!-- <a class="pill" href="#gallery"
-            ><i class="fa-regular fa-images"></i> Gallery</a
-          > -->
+          <a
+            href="https://cybersec-clinique.co.za/"
+            target="_blank"
+            class="brand"
+          >
+            <img class="mark" src="/cyber.png" alt="Cybersec Clinique" />
+          </a>
+          <a href="#" class="brand">
+            <img class="mark" src="/LOLLIE LOGO.png" alt="Amandla Logo" />
+            <b>Amandla Listening Experience</b>
+          </a>
         </div>
       </div>
     </footer>
 
     <script>
-  // TODO: replace with your own config from Firebase Console → Project settings → Your apps (</>)
-  const firebaseConfig = {
-  apiKey: "AIzaSyAT2yqiArepzYR2B3fQemLhdbjMwbsi_aA",
-  authDomain: "cybernative-fc60c.firebaseapp.com",
-  projectId: "cybernative-fc60c",
-  storageBucket: "cybernative-fc60c.firebasestorage.app",
-  messagingSenderId: "862008823018",
-  appId: "1:862008823018:web:c6821169109c536a9b9b93",
-  measurementId: "G-KBGBRKR2H3"
-};
+      // ---- Firebase (compat) ----
+      const firebaseConfig = {
+        apiKey: "AIzaSyAT2yqiArepzYR2B3fQemLhdbjMwbsi_aA",
+        authDomain: "cybernative-fc60c.firebaseapp.com",
+        projectId: "cybernative-fc60c",
+        storageBucket: "cybernative-fc60c.firebasestorage.app",
+        messagingSenderId: "862008823018",
+        appId: "1:862008823018:web:c6821169109c536a9b9b93",
+        measurementId: "G-KBGBRKR2H3",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
 
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("rsvp-form");
+        if (!form) return;
 
-  // Init Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // Tap into the existing form *without* changing your current handler
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("rsvp-form");
-    if (!form) return;
-
-    // Register our listener BEFORE your other script runs (this tag is above it)
-    form.addEventListener("submit", async (e) => {
-      try {
-        // Don’t preventDefault here — let your EmailJS code do its thing.
-        const payload = {
-          name:   form.name?.value?.trim()   ?? "",
-          email:  form.email?.value?.trim()  ?? "",
-          phone:  form.phone?.value?.trim()  ?? "",
-          guests: form.guests?.value ?? null,
-          attend: form.attend?.value ?? "",
-          notes:  form.notes?.value?.trim()  ?? "",
-          // handy metadata
-          submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          userAgent: navigator.userAgent,
-          page: location.href
-        };
-
-        // Fire and forget — no UI changes here so we don't clash with your status text/reset
-        await db.collection("rsvps").add(payload);
-        // Optional: console ping for sanity
-        console.log("RSVP saved to Firestore");
-      } catch (err) {
-        console.error("Firestore write failed:", err);
-        // keep quiet in UI so we don't fight your existing status element
-      }
-    });
-  });
-</script>
+        // Save to Firestore (do NOT prevent default here so EmailJS can still run)
+        form.addEventListener("submit", async () => {
+          try {
+            const payload = {
+              name: form.name?.value?.trim() ?? "",
+              email: form.email?.value?.trim() ?? "",
+              phone: form.phone?.value?.trim() ?? "",
+              guests: form.guests?.value ?? null, // may be undefined; that's fine
+              attend: form.attend?.value ?? "",
+              notes: form.notes?.value?.trim() ?? "",
+              submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+              userAgent: navigator.userAgent,
+              page: location.href,
+            };
+            await db.collection("rsvps").add(payload);
+            console.log("RSVP saved to Firestore");
+          } catch (err) {
+            console.error("Firestore write failed:", err);
+          }
+        });
+      });
+    </script>
 
     <script>
-      // Show header after first scroll
+      // ---- Header on scroll ----
       const header = document.getElementById("header");
       const revealHeader = () => {
+        if (!header) return;
         if (window.scrollY > 40) header.classList.add("visible");
         else header.classList.remove("visible");
       };
       revealHeader();
       window.addEventListener("scroll", revealHeader);
 
-      // EmailJS init (replace with your keys)
+      // ---- EmailJS ----
       (function () {
-        emailjs.init("Uo0A0uprHKDmk3url"); // TODO: replace with your EmailJS Public Key
+        emailjs.init("Uo0A0uprHKDmk3url"); // replace with your EmailJS Public Key
       })();
 
-      // Add-to-calendar link builder (simple ICS via data URI)
+      // ---- Calendar link (safe if commented out) ----
+      const calLink = document.getElementById("calendar-link");
       function buildICS({ title, description, location, start, end }) {
         const pad = (n) => String(n).padStart(2, "0");
         const fmt = (d) =>
           `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(
             d.getUTCDate()
           )}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
-        const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Album Listening//EN\nBEGIN:VEVENT\nUID:${Date.now()}@listening.local\nDTSTAMP:${fmt(
-          new Date()
-        )}\nDTSTART:${fmt(start)}\nDTEND:${fmt(
-          end
-        )}\nSUMMARY:${title}\nDESCRIPTION:${description}\nLOCATION:${location}\nEND:VEVENT\nEND:VCALENDAR`;
+        const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Album Listening//EN
+BEGIN:VEVENT
+UID:${Date.now()}@listening.local
+DTSTAMP:${fmt(new Date())}
+DTSTART:${fmt(start)}
+DTEND:${fmt(end)}
+SUMMARY:${title}
+DESCRIPTION:${description}
+LOCATION:${location}
+END:VEVENT
+END:VCALENDAR`;
         return "data:text/calendar;charset=utf8," + encodeURIComponent(ics);
       }
+      if (calLink) {
+        const start = new Date("2025-09-28T18:00:00+02:00");
+        const end = new Date("2025-09-28T22:00:00+02:00");
+        calLink.href = buildICS({
+          title: "Album Listening Session",
+          description: "Exclusive playback + Q&A. Guest list only.",
+          location: "Hyde Park",
+          start,
+          end,
+        });
+      }
 
-      // Configure calendar link for the shown sample date/time (adjust to your real event)
-      const calLink = document.getElementById("calendar-link");
-      const start = new Date("2025-09-28T18:00:00+02:00"); // Doors 19:00 local, set start earlier if you like
-      const end = new Date("2025-09-28T22:00:00+02:00");
-      calLink.href = buildICS({
-        title: "Album Listening Session",
-        description: "Exclusive playback + Q&A. Guest list only.",
-        location: "Hyde Park",
-        start,
-        end,
-      });
-
-      // RSVP form handler
+      // ---- RSVP + EmailJS ----
       const form = document.getElementById("rsvp-form");
       const statusEl = document.getElementById("rsvp-status");
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        statusEl.textContent = "Sending…";
-        try {
-          const serviceID = "service_r4m5dxe"; // TODO: replace
-          const templateID = "template_nst54u2"; // TODO: replace
-          await emailjs.sendForm(serviceID, templateID, form);
-          statusEl.textContent =
-            "✅ You're on the list! Check your email for details.";
-          form.reset();
-        } catch (err) {
-          console.error(err);
-          statusEl.textContent =
-            "❌ Could not send RSVP. Please try again or DM us.";
-        }
-      });
+      if (form && statusEl) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          statusEl.textContent = "Sending…";
+          try {
+            const serviceID = "service_r4m5dxe"; // replace
+            const templateID = "template_nst54u2"; // replace
+            await emailjs.sendForm(serviceID, templateID, form);
+            statusEl.textContent =
+              "✅ You're on the list! Check your email for details.";
+            form.reset();
+          } catch (err) {
+            console.error(err);
+            statusEl.textContent =
+              "❌ Could not send RSVP. Please try again or DM us.";
+          }
+        });
+      }
     </script>
+
     <script>
-  // ---- Reveal on scroll (adds .is-in when visible) ----
-  (function() {
-    const els = document.querySelectorAll(
-      '.info-tile, .about-card, .shot, .card, .flyer, .title, .subtitle, .hero-cta .cta'
-    );
-    els.forEach(el => el.classList.add('reveal'));
+      // ---- Reveal on scroll ----
+      (function () {
+        const els = document.querySelectorAll(
+          ".info-tile, .about-card, .shot, .card, .flyer, .title, .subtitle, .hero-cta .cta"
+        );
+        els.forEach((el) => el.classList.add("reveal"));
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((en) => {
+              if (en.isIntersecting) {
+                en.target.classList.add("is-in");
+                io.unobserve(en.target);
+              }
+            });
+          },
+          { threshold: 0.14, rootMargin: "0px 0px -10% 0px" }
+        );
+        els.forEach((el) => io.observe(el));
+      })();
 
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(en => {
-        if (en.isIntersecting) {
-          en.target.classList.add('is-in');
-          io.unobserve(en.target);
-        }
-      });
-    }, { threshold: 0.14, rootMargin: '0px 0px -10% 0px' });
+      // ---- Magnetic hover for buttons (desktop only) ----
+      (function () {
+        if (!window.matchMedia("(hover:hover)").matches) return;
+        const mags = document.querySelectorAll(".btn, .cta");
+        mags.forEach((el) => {
+          const strength = 12; // px
+          el.style.willChange = "transform";
+          el.addEventListener("mousemove", (e) => {
+            const r = el.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            el.style.transform = `translate(${x * strength}px, ${
+              y * strength
+            }px)`;
+          });
+          el.addEventListener("mouseleave", () => {
+            el.style.transform = "";
+          });
+        });
+      })();
 
-    els.forEach(el => io.observe(el));
-  })();
+      // ---- Flyer tilt ----
+      (function () {
+        if (!window.matchMedia("(hover:hover)").matches) return;
+        const cards = document.querySelectorAll(".flyer, .flyer1");
+        cards.forEach((card) => {
+          const max = 8; // deg
+          card.addEventListener("mousemove", (e) => {
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            card.style.transform = `rotateY(${x * max}deg) rotateX(${
+              -y * max
+            }deg)`;
+          });
+          card.addEventListener("mouseleave", () => {
+            card.style.transform = "";
+          });
+        });
+      })();
+    </script>
 
-  // ---- Magnetic hover for buttons (desktop only, super light) ----
-  (function(){
-    if (!window.matchMedia('(hover:hover)').matches) return;
-    const mags = document.querySelectorAll('.btn, .cta');
-    mags.forEach(el => {
-      const strength = 12; // px
-      el.style.willChange = 'transform';
-      el.addEventListener('mousemove', (e) => {
-        const r = el.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width) - 0.5;
-        const y = ((e.clientY - r.top) / r.height) - 0.5;
-        el.style.transform = `translate(${x*strength}px, ${y*strength}px)`;
-      });
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = '';
-      });
-    });
-  })();
-
-  // ---- Flyer tilt (works for .flyer and .flyer1 if present) ----
-  (function(){
-    if (!window.matchMedia('(hover:hover)').matches) return;
-    const cards = document.querySelectorAll('.flyer, .flyer1');
-    cards.forEach(card => {
-      const max = 8; // deg
-      card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        card.style.transform = `rotateY(${x*max}deg) rotateX(${ -y*max }deg)`;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-      });
-    });
-  })();
-</script>
-
+    <!-- Removed the duplicate modular Firebase block to prevent conflicts -->
   </body>
 </html>
