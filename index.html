@@ -833,6 +833,92 @@
         transform: translateY(-2px);
         background: rgba(255, 255, 255, 0.09);
       }
+      /* ---------- Loader + Modal ---------- */
+      .hidden {
+        display: none !important;
+      }
+
+      #global-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(
+          60% 60% at 50% 40%,
+          rgba(0, 0, 0, 0.55),
+          rgba(0, 0, 0, 0.75)
+        );
+        backdrop-filter: blur(6px);
+      }
+      #global-loader .spinner {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 4px solid rgba(255, 255, 255, 0.15);
+        border-top-color: var(--gold);
+        animation: spin 0.9s linear infinite;
+        box-shadow: 0 0 28px rgba(228, 179, 78, 0.25);
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      #confirm-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(6px);
+        padding: 24px;
+      }
+      #confirm-modal .dialog {
+        width: min(520px, 92%);
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+        color: var(--ink);
+      }
+      #confirm-modal .dialog h3 {
+        font-family: "Bebas Neue";
+        font-size: 34px;
+        margin-bottom: 6px;
+      }
+      #confirm-modal .dialog p {
+        color: var(--muted);
+      }
+      #confirm-modal .actions {
+        margin-top: 14px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      #confirm-modal .actions .btn-close {
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: transparent;
+        color: var(--ink);
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      #confirm-modal .actions .btn-primary {
+        background: linear-gradient(120deg, var(--gold), #f6d27a);
+        color: #141414;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-weight: 800;
+        border: none;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -1293,64 +1379,110 @@ END:VCALENDAR`;
     </script>
 
     <script>
-      // ---- Reveal on scroll ----
+      // ----- RSVP: hardened UX submit flow -----
       (function () {
-        const els = document.querySelectorAll(
-          ".info-tile, .about-card, .shot, .card, .flyer, .title, .subtitle, .hero-cta .cta"
-        );
-        els.forEach((el) => el.classList.add("reveal"));
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((en) => {
-              if (en.isIntersecting) {
-                en.target.classList.add("is-in");
-                io.unobserve(en.target);
-              }
-            });
-          },
-          { threshold: 0.14, rootMargin: "0px 0px -10% 0px" }
-        );
-        els.forEach((el) => io.observe(el));
-      })();
+        const form = document.getElementById("rsvp-form");
+        const statusEl = document.getElementById("rsvp-status");
+        const loader = document.getElementById("global-loader");
+        const modal = document.getElementById("confirm-modal");
+        const btnClose = document.getElementById("modal-close");
+        const btnDone = document.getElementById("modal-done");
 
-      // ---- Magnetic hover for buttons (desktop only) ----
-      (function () {
-        if (!window.matchMedia("(hover:hover)").matches) return;
-        const mags = document.querySelectorAll(".btn, .cta");
-        mags.forEach((el) => {
-          const strength = 12; // px
-          el.style.willChange = "transform";
-          el.addEventListener("mousemove", (e) => {
-            const r = el.getBoundingClientRect();
-            const x = (e.clientX - r.left) / r.width - 0.5;
-            const y = (e.clientY - r.top) / r.height - 0.5;
-            el.style.transform = `translate(${x * strength}px, ${
-              y * strength
-            }px)`;
+        if (!form) return;
+
+        let isSubmitting = false;
+
+        function toggleLoader(show) {
+          if (!loader) return;
+          loader.style.display = show ? "flex" : "none";
+        }
+
+        function toggleForm(form, disabled) {
+          Array.from(form.elements).forEach((el) => {
+            el.disabled = disabled;
           });
-          el.addEventListener("mouseleave", () => {
-            el.style.transform = "";
-          });
+          const submit = form.querySelector('button[type="submit"]');
+          if (submit) {
+            submit.disabled = disabled;
+            submit.textContent = disabled ? "Submitting…" : "Submit RSVP";
+          }
+        }
+
+        function showModal(message) {
+          const text = document.getElementById("confirm-text");
+          if (text && message) text.textContent = message;
+          if (modal) modal.style.display = "flex";
+        }
+        function hideModal() {
+          if (modal) modal.style.display = "none";
+        }
+
+        // Close modal handlers
+        btnClose?.addEventListener("click", hideModal);
+        btnDone?.addEventListener("click", hideModal);
+        modal?.addEventListener("click", (e) => {
+          if (e.target === modal) hideModal();
         });
-      })();
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") hideModal();
+        });
 
-      // ---- Flyer tilt ----
-      (function () {
-        if (!window.matchMedia("(hover:hover)").matches) return;
-        const cards = document.querySelectorAll(".flyer, .flyer1");
-        cards.forEach((card) => {
-          const max = 8; // deg
-          card.addEventListener("mousemove", (e) => {
-            const r = card.getBoundingClientRect();
-            const x = (e.clientX - r.left) / r.width - 0.5;
-            const y = (e.clientY - r.top) / r.height - 0.5;
-            card.style.transform = `rotateY(${x * max}deg) rotateX(${
-              -y * max
-            }deg)`;
-          });
-          card.addEventListener("mouseleave", () => {
-            card.style.transform = "";
-          });
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (isSubmitting) return; // hard guard
+          isSubmitting = true;
+
+          // Capture values up-front
+          const payload = {
+            name: form.name?.value?.trim() ?? "",
+            email: form.email?.value?.trim() ?? "",
+            phone: form.phone?.value?.trim() ?? "",
+            guests: form.guests?.value ?? null,
+            attend: form.attend?.value ?? "",
+            notes: form.notes?.value?.trim() ?? "",
+            submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            userAgent: navigator.userAgent,
+            page: location.href,
+          };
+
+          // UX: lock + show loader + clear immediately to avoid dupes
+          toggleForm(form, true);
+          statusEl && (statusEl.textContent = "");
+          toggleLoader(true);
+          form.reset(); // <- clears right away
+
+          try {
+            // Firestore + EmailJS in parallel
+            const serviceID = "service_r4m5dxe"; // your existing ID
+            const templateID = "template_nst54u2"; // your existing ID
+
+            // For EmailJS template, make sure the field names match your template variables
+            const emailParams = {
+              name: payload.name,
+              email: payload.email,
+              phone: payload.phone,
+              attend: payload.attend,
+              notes: payload.notes,
+            };
+
+            await Promise.all([
+              db.collection("rsvps").add(payload),
+              emailjs.send(serviceID, templateID, emailParams),
+            ]);
+
+            showModal(
+              "Thanks — your RSVP is confirmed. We’ve also emailed you a confirmation."
+            );
+          } catch (err) {
+            console.error(err);
+            showModal(
+              "We couldn’t send your RSVP right now. Please try again in a bit or DM us."
+            );
+          } finally {
+            toggleLoader(false);
+            toggleForm(form, false);
+            isSubmitting = false;
+          }
         });
       })();
     </script>
