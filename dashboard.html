@@ -111,6 +111,14 @@
         opacity: 0.6;
         cursor: not-allowed;
       }
+      .btn.danger {
+        background: rgba(220, 80, 80, 0.15);
+        color: #dc5050;
+        border: 1px solid rgba(220, 80, 80, 0.3);
+      }
+      .btn.danger:hover {
+        background: rgba(220, 80, 80, 0.25);
+      }
 
       .cards {
         display: grid;
@@ -274,6 +282,48 @@
       .toast.error .toast-icon {
         color: #dc5050;
       }
+
+      /* Confirmation Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+      .modal-overlay.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+      .modal {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 24px;
+        width: min(90%, 500px);
+        box-shadow: var(--shadow);
+      }
+      .modal h3 {
+        font-size: 20px;
+        margin-bottom: 16px;
+      }
+      .modal p {
+        margin-bottom: 24px;
+        line-height: 1.5;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+      }
     </style>
   </head>
   <body>
@@ -336,11 +386,12 @@
                 <th>Status</th>
                 <th>Notes</th>
                 <th>Submitted</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="rows">
               <tr>
-                <td colspan="6" class="muted" style="padding: 16px">
+                <td colspan="7" class="muted" style="padding: 16px">
                   Loading…
                 </td>
               </tr>
@@ -358,6 +409,25 @@
     <div id="toast" class="toast">
       <i id="toast-icon" class="toast-icon"></i>
       <span id="toast-message"></span>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay">
+      <div class="modal">
+        <h3>
+          <i class="fa-solid fa-triangle-exclamation"></i> Confirm Deletion
+        </h3>
+        <p>
+          Are you sure you want to delete this RSVP record? This action cannot
+          be undone.
+        </p>
+        <div class="modal-actions">
+          <button id="cancel-delete" class="btn">Cancel</button>
+          <button id="confirm-delete" class="btn danger">
+            <i class="fa-solid fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -384,6 +454,7 @@
       // === STATE ===
       let allRows = []; // raw Firestore docs (normalized)
       let viewRows = []; // filtered rows for table
+      let recordToDelete = null; // stores the record to be deleted
 
       // === HELPERS ===
       const el = (id) => document.getElementById(id);
@@ -470,7 +541,7 @@
       function renderTable(rows) {
         const tbody = el("rows");
         if (!rows.length) {
-          tbody.innerHTML = `<tr><td colspan="6" class="muted" style="padding:16px">No submissions yet.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" class="muted" style="padding:16px">No submissions yet.</td></tr>`;
           return;
         }
         tbody.innerHTML = rows
@@ -486,10 +557,54 @@
           <td>${badge(r.attend)}</td>
           <td style="max-width:420px">${safe(r.notes)}</td>
           <td class="muted">${fmtDate(r.submittedAt)}</td>
+          <td>
+            <button class="btn danger delete-btn" data-id="${r.id}">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
         </tr>
       `
           )
           .join("");
+
+        // Add event listeners to delete buttons
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const id = e.currentTarget.getAttribute("data-id");
+            const record = allRows.find((r) => r.id === id);
+            if (record) {
+              showDeleteModal(record);
+            }
+          });
+        });
+      }
+
+      // Show delete confirmation modal
+      function showDeleteModal(record) {
+        recordToDelete = record;
+        const modal = el("delete-modal");
+        modal.classList.add("visible");
+      }
+
+      // Hide delete confirmation modal
+      function hideDeleteModal() {
+        const modal = el("delete-modal");
+        modal.classList.remove("visible");
+        recordToDelete = null;
+      }
+
+      // Delete record from Firestore
+      async function deleteRecord() {
+        if (!recordToDelete) return;
+
+        try {
+          await db.collection("rsvps").doc(recordToDelete.id).delete();
+          showToast(`Record for ${recordToDelete.name} deleted successfully`);
+          hideDeleteModal();
+        } catch (error) {
+          console.error("Error deleting record:", error);
+          showToast("Error deleting record", "error");
+        }
       }
 
       // Excel export function
@@ -614,6 +729,17 @@
       el("status").addEventListener("change", applyFilters);
       el("export-btn").addEventListener("click", exportExcel);
       el("refresh-btn").addEventListener("click", refreshOnce);
+
+      // Delete modal handlers
+      el("cancel-delete").addEventListener("click", hideDeleteModal);
+      el("confirm-delete").addEventListener("click", deleteRecord);
+
+      // Close modal when clicking outside
+      el("delete-modal").addEventListener("click", (e) => {
+        if (e.target === el("delete-modal")) {
+          hideDeleteModal();
+        }
+      });
 
       // Check if XLSX library loaded after page fully loads
       window.addEventListener("load", checkXLSX);
