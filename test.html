@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSVP Admin — Dashboard</title>
+
+    <!-- Fonts / Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+    <!-- PDF export (jsPDF + AutoTable) -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
+
+    <!-- EmailJS for sending emails -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <style>
+      :root {
+        --bg: #0b0e14;
+        --bg-2: #0f1421;
+        --ink: #eaeaea;
+        --muted: #a7a7a7;
+        --gold: #e4b34e;
+        --accent: #0a84ff;
+        --card: rgba(255, 255, 255, 0.05);
+        --line: rgba(255, 255, 255, 0.12);
+        --r: 16px;
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial,
+          sans-serif;
+        background: radial-gradient(
+            1200px 800px at 10% 10%,
+            #10172a 0%,
+            transparent 60%
+          ),
+          radial-gradient(900px 700px at 90% 80%, #141b2f 0%, transparent 60%),
+          var(--bg);
+        color: var(--ink);
+        line-height: 1.55;
+        min-height: 100vh;
+      }
+      .container {
+        width: min(1200px, 94%);
+        margin-inline: auto;
+        padding: 28px 0;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0 22px;
+      }
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-weight: 800;
+      }
+      .brand b {
+        font-family: "Bebas Neue", system-ui;
+        font-size: 32px;
+        letter-spacing: 0.5px;
+      }
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--ink);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .btn.primary {
+        background: linear-gradient(120deg, var(--gold), #f6d27a);
+        color: #141414;
+        border: none;
+        box-shadow: 0 8px 28px rgba(228, 179, 78, 0.25);
+      }
+      .btn.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(228, 179, 78, 0.35);
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .btn.danger {
+        background: rgba(220, 80, 80, 0.15);
+        color: #dc5050;
+        border: 1px solid rgba(220, 80, 80, 0.3);
+      }
+      .btn.danger:hover {
+        background: rgba(220, 80, 80, 0.25);
+      }
+      .btn.info {
+        background: rgba(10, 132, 255, 0.15);
+        color: var(--accent);
+        border: 1px solid rgba(10, 132, 255, 0.3);
+      }
+      .btn.info:hover {
+        background: rgba(10, 132, 255, 0.25);
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 10px 0 20px;
+      }
+      @media (max-width: 900px) {
+        .cards {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 540px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+      .k {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .v {
+        font-family: "Bebas Neue";
+        font-size: 44px;
+        line-height: 0.9;
+      }
+
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 18px;
+        box-shadow: var(--shadow);
+        margin-top: 16px;
+      }
+      .panel h2 {
+        font-family: "Bebas Neue";
+        font-size: 36px;
+        margin-bottom: 8px;
+      }
+      .filters {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 10px 0 14px;
+      }
+      input[type="search"],
+      select,
+      textarea,
+      input[type="text"],
+      input[type="file"] {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        padding: 10px 12px;
+        border-radius: 12px;
+        outline: none;
+        transition: all 0.2s ease;
+        font-family: inherit;
+      }
+      input[type="search"]:focus,
+      select:focus,
+      textarea:focus,
+      input[type="text"]:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(228, 179, 78, 0.2);
+      }
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        resize: vertical;
+      }
+      input[type="file"] {
+        padding: 8px;
+        width: 100%;
+      }
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+      }
+      thead th {
+        background: #0f1421;
+        font-weight: 700;
+        text-align: left;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+        font-size: 14px;
+      }
+      tbody td {
+        padding: 12px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+        vertical-align: top;
+      }
+      tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        font-size: 12px;
+      }
+      .badge.yes {
+        background: rgba(12, 180, 90, 0.14);
+        border-color: rgba(12, 180, 90, 0.5);
+      }
+      .badge.maybe {
+        background: rgba(228, 179, 78, 0.14);
+        border-color: rgba(228, 179, 78, 0.5);
+      }
+      .badge.no {
+        background: rgba(220, 80, 80, 0.14);
+        border-color: rgba(220, 80, 80, 0.5);
+      }
+      .badge.checked-in {
+        background: rgba(12, 180, 90, 0.14);
+        border-color: rgba(12, 180, 90, 0.5);
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      /* Toast notification */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: var(--shadow);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+      .toast.visible {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .toast.success {
+        border-left: 4px solid #0cb45a;
+      }
+      .toast.error {
+        border-left: 4px solid #dc5050;
+      }
+      .toast.warning {
+        border-left: 4px solid #e4b34e;
+      }
+      .toast-icon {
+        font-size: 20px;
+      }
+      .toast.success .toast-icon {
+        color: #0cb45a;
+      }
+      .toast.error .toast-icon {
+        color: #dc5050;
+      }
+      .toast.warning .toast-icon {
+        color: #e4b34e;
+      }
+
+      /* Confirmation Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+      .modal-overlay.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+      .modal {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 24px;
+        width: min(90%, 500px);
+        box-shadow: var(--shadow);
+      }
+      .modal h3 {
+        font-size: 20px;
+        margin-bottom: 16px;
+      }
+      .modal p {
+        margin-bottom: 24px;
+        line-height: 1.5;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+      }
+
+      /* Email Panel */
+      .email-panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 18px;
+        box-shadow: var(--shadow);
+        margin-top: 16px;
+      }
+      .email-panel h2 {
+        font-family: "Bebas Neue";
+        font-size: 36px;
+        margin-bottom: 8px;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .email-preview {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: var(--r);
+        padding: 16px;
+        margin-top: 16px;
+        border: 1px solid var(--line);
+      }
+      .email-preview h4 {
+        margin-bottom: 8px;
+        color: var(--muted);
+      }
+      .preview-content {
+        white-space: pre-wrap;
+        line-height: 1.6;
+      }
+
+      /* Attachment styles */
+      .attachment-list {
+        margin-top: 10px;
+      }
+      .attachment-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        margin-bottom: 8px;
+      }
+      .attachment-name {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .remove-attachment {
+        background: none;
+        border: none;
+        color: #dc5050;
+        cursor: pointer;
+        padding: 4px;
+        margin-left: 8px;
+      }
+
+      /* Progress bar */
+      .progress-container {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        margin: 10px 0;
+        overflow: hidden;
+      }
+      .progress-bar {
+        height: 100%;
+        background: var(--gold);
+        border-radius: 4px;
+        transition: width 0.3s ease;
+      }
+      
+      /* Check-in styles */
+      .checkin-cell {
+        text-align: center;
+      }
+      .checkin-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+      .checked-in-row {
+        background: rgba(12, 180, 90, 0.08) !important;
+      }
+      .checkin-bulk {
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="brand">
+          <i class="fa-solid fa-gauge-high"></i>
+          <b>RSVP Admin</b>
+        </div>
+        <div class="toolbar">
+          <button id="export-btn" class="btn primary">
+            <i class="fa-solid fa-file-excel"></i> Export Excel
+          </button>
+          <button id="email-btn" class="btn info">
+            <i class="fa-solid fa-envelope"></i> Send Email
+          </button>
+          <button id="refresh-btn" class="btn">
+            <i class="fa-solid fa-rotate"></i> Refresh
+          </button>
+          <button id="checkin-bulk-btn" class="btn primary checkin-bulk">
+            <i class="fa-solid fa-check"></i> Check In Selected
+          </button>
+        </div>
+      </header>
+
+      <!-- KPI cards -->
+      <div class="cards">
+        <div class="card">
+          <div class="k">Total submissions</div>
+          <div class="v" id="kpi-total">0</div>
+        </div>
+        <div class="card">
+          <div class="k">Yes</div>
+          <div class="v" id="kpi-yes">0</div>
+        </div>
+        <div class="card">
+          <div class="k">Maybe</div>
+          <div class="v" id="kpi-maybe">0</div>
+        </div>
+        <div class="card">
+          <div class="k">No</div>
+          <div class="v" id="kpi-no">0</div>
+        </div>
+        <div class="card">
+          <div class="k">Checked In</div>
+          <div class="v" id="kpi-checked-in">0</div>
+        </div>
+        <button id="export-pdf-btn" class="btn">
+          <i class="fa-solid fa-file-pdf"></i> Export PDF
+        </button>
+      </div>
+
+      <!-- Email Panel (initially hidden) -->
+      <div id="email-panel" class="email-panel" style="display: none">
+        <h2>Send Confirmation Email</h2>
+        <div class="form-group">
+          <label for="email-subject">Subject</label>
+          <input
+            type="text"
+            id="email-subject"
+            value="Your RSVP is Confirmed – Lolli Native Listening Experience"
+          />
+        </div>
+        <div class="form-group">
+          <label for="email-body">Email Body</label>
+          <textarea id="email-body">
+Dear [Name],
+
+Thank you for confirming your attendance at the Lolli Native Listening Experience, an exclusive and intimate showcase of Lolli Native's second independent release, taking place on 18 September 2025.
+
+This evening is more than a listening session; it is a carefully curated dining and musical experience, designed to immerse you in music, style, and presence. Every detail reflects the artistry and spirit of Lolli Native, creating a space where culture, creativity, and expression converge.
+
+Venue: The location will be shared with you shortly in preparation for the experience.
+
+Seating and Attendance: This is an intimate evening with limited seating. Please note that your RSVP is personal and non-transferable. Additional guests or plus ones will only be accommodated if previously confirmed.
+
+Dress Code: Attire that reflects the theme is essential to the atmosphere of the evening. To fully embrace the experience, please consult the attached style guide and attire card. Kindly note that adherence to the theme is required, and guests not dressed accordingly may be respectfully turned away.
+
+We look forward to welcoming you to an unforgettable night of artistry, style, and distinction.
+
+Warm Regards
+Team Lolli Native, 38 Talent Management</textarea
+          >
+        </div>
+
+        <!-- Attachment Section -->
+        <div class="form-group">
+          <label for="email-attachments">Attachments</label>
+          <input type="file" id="email-attachments" multiple />
+          <div class="attachment-list" id="attachment-list"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Recipients</label>
+          <div class="muted" id="recipient-count">
+            Will be sent to 0 attendees
+          </div>
+        </div>
+
+        <!-- Progress bar for email sending -->
+        <div id="email-progress" style="display: none">
+          <div class="muted" id="progress-status">
+            Preparing to send emails...
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+          </div>
+          <div class="muted" id="progress-detail">0/0 emails sent</div>
+        </div>
+
+        <div class="email-preview">
+          <h4>Preview</h4>
+          <div class="preview-content" id="email-preview"></div>
+        </div>
+        <div style="margin-top: 16px; display: flex; gap: 10px">
+          <button id="cancel-email" class="btn">Cancel</button>
+          <button id="send-email" class="btn primary">
+            <i class="fa-solid fa-paper-plane"></i> Send to All Attendees
+          </button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="panel">
+        <h2>RSVP submissions</h2>
+        <div class="filters">
+          <input id="q" type="search" placeholder="Search name/email/phone…" />
+          <select id="status">
+            <option value="">All statuses</option>
+            <option value="Yes">Yes</option>
+            <option value="Maybe">Maybe</option>
+            <option value="No">No</option>
+          </select>
+          <select id="checkin-filter">
+            <option value="">All check-in statuses</option>
+            <option value="checked-in">Checked In</option>
+            <option value="not-checked-in">Not Checked In</option>
+          </select>
+        </div>
+
+        <div style="overflow: auto">
+          <table id="rsvp-table">
+            <thead>
+              <tr>
+                <th class="checkin-cell">Check In</th>
+                <th>Name</th>
+                <th>Email / Phone</th>
+                <th>Guests</th>
+                <th>Status</th>
+                <th>Notes</th>
+                <th>Submitted</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr>
+                <td colspan="8" class="muted" style="padding: 16px">
+                  Loading…
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="right" style="margin-top: 10px">
+          <span class="muted" id="count-note">0 rows</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast">
+      <i id="toast-icon" class="toast-icon"></i>
+      <span id="toast-message"></span>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay">
+      <div class="modal">
+        <h3>
+          <i class="fa-solid fa-triangle-exclamation"></i> Confirm Deletion
+        </h3>
+        <p>
+          Are you sure you want to delete this RSVP record? This action cannot
+          be undone.
+        </p>
+        <div class="modal-actions">
+          <button id="cancel-delete" class="btn">Cancel</button>
+          <button id="confirm-delete" class="btn danger">
+            <i class="fa-solid fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Confirmation Modal -->
+    <div id="email-confirm-modal" class="modal-overlay">
+      <div class="modal">
+        <h3><i class="fa-solid fa-paper-plane"></i> Confirm Email Send</h3>
+        <p id="email-confirm-text">
+          Are you sure you want to send this email to all attendees?
+        </p>
+        <div class="modal-actions">
+          <button id="cancel-email-send" class="btn">Cancel</button>
+          <button id="confirm-email-send" class="btn primary">
+            <i class="fa-solid fa-paper-plane"></i> Send Emails
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // === FIREBASE CONFIG ===
+      const firebaseConfig = {
+        apiKey: "AIzaSyAT2yqiArepzYR2B3fQemLhdbjMwbsi_aA",
+        authDomain: "cybernative-fc60c.firebaseapp.com",
+        projectId: "cybernative-fc60c",
+        storageBucket: "cybernative-fc60c.firebasestorage.app",
+        messagingSenderId: "862008823018",
+        appId: "1:862008823018:web:c6821169109c536a9b9b93",
+        measurementId: "G-KBGBRKR2H3",
+      };
+
+      // Initialize Firebase
+      try {
+        firebase.initializeApp(firebaseConfig);
+      } catch (error) {
+        console.error("Firebase initialization error:", error);
+      }
+
+      // Initialize EmailJS (replace with your own public key)
+      (function () {
+        emailjs.init("YOUR_EMAILJS_PUBLIC_KEY"); // You need to sign up at EmailJS and replace this with your public key
+      })();
+
+      const db = firebase.firestore();
+
+      // === STATE ===
+      let allRows = []; // raw Firestore docs (normalized)
+      let viewRows = []; // filtered rows for table
+      let recordToDelete = null; // stores the record to be deleted
+      let emailAttachments = []; // stores files to be attached to emails
+      let selectedRows = new Set(); // stores IDs of selected rows for bulk check-in
+
+      // === HELPERS ===
+      const el = (id) => document.getElementById(id);
+      const safe = (v) => (v ?? "").toString();
+      const fmtDate = (ts) => {
+        if (!ts) return "";
+        const d = ts.toDate
+          ? ts.toDate()
+          : ts instanceof Date
+          ? ts
+          : new Date(ts);
+        return d.toLocaleString();
+      };
+
+      // Toast notification function
+      function showToast(message, type = "success") {
+        const toast = el("toast");
+        const toastIcon = el("toast-icon");
+        const toastMessage = el("toast-message");
+
+        toast.className = `toast ${type}`;
+        toastIcon.className = `toast-icon fa-solid ${
+          type === "success"
+            ? "fa-circle-check"
+            : type === "error"
+            ? "fa-circle-exclamation"
+            : "fa-triangle-exclamation"
+        }`;
+        toastMessage.textContent = message;
+
+        toast.classList.add("visible");
+
+        setTimeout(() => {
+          toast.classList.remove("visible");
+        }, 3000);
+      }
+
+      function renderKPIs(rows) {
+        const totals = rows.reduce(
+          (acc, r) => {
+            acc.total++;
+            const a = (r.attend || "").toLowerCase();
+            if (a === "yes") acc.yes++;
+            else if (a === "maybe") acc.maybe++;
+            else if (a === "no") acc.no++;
+            
+            // Count checked-in attendees
+            if (r.checkedIn) {
+              acc.checkedIn++;
+            }
+            
+            return acc;
+          },
+          { total: 0, yes: 0, maybe: 0, no: 0, checkedIn: 0 }
+        );
+        el("kpi-total").textContent = totals.total;
+        el("kpi-yes").textContent = totals.yes;
+        el("kpi-maybe").textContent = totals.maybe;
+        el("kpi-no").textContent = totals.no;
+        el("kpi-checked-in").textContent = totals.checkedIn;
+      }
+
+      function badge(attend) {
+        const a = (attend || "").toLowerCase();
+        const cls =
+          a === "yes"
+            ? "yes"
+            : a === "maybe"
+            ? "maybe"
+            : a === "no"
+            ? "no"
+            : "";
+        return `<span class="badge ${cls}">${safe(attend || "—")}</span>`;
+      }
+
+      function applyFilters() {
+        const q = el("q").value.trim().toLowerCase();
+        const s = el("status").value;
+        const checkinFilter = el("checkin-filter").value;
+        
+        viewRows = allRows.filter((r) => {
+          const text = [r.name, r.email, r.phone, r.notes]
+            .map(safe)
+            .join(" ")
+            .toLowerCase();
+          const passQ = q ? text.includes(q) : true;
+          const passS = s ? r.attend === s : true;
+          
+          // Apply check-in filter
+          let passCheckin = true;
+          if (checkinFilter === "checked-in") {
+            passCheckin = r.checkedIn === true;
+          } else if (checkinFilter === "not-checked-in") {
+            passCheckin = r.checkedIn !== true;
+          }
+          
+          return passQ && passS && passCheckin;
+        });
+        renderTable(viewRows);
+        renderKPIs(viewRows);
+        el("count-note").textContent = `${viewRows.length} row${
+          viewRows.length === 1 ? "" : "s"
+        }`;
+
+        // Update recipient count for email
+        updateRecipientCount();
+      }
+
+      function renderTable(rows) {
+        const tbody = el("rows");
+        if (!rows.length) {
+          tbody.innerHTML = `<tr><td colspan="8" class="muted" style="padding:16px">No submissions yet.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = rows
+          .map(
+            (r) => `
+        <tr class="${r.checkedIn ? 'checked-in-row' : ''}" data-id="${r.id}">
+          <td class="checkin-cell">
+            ${r.checkedIn 
+              ? '<i class="fa-solid fa-check-circle" style="color:#0cb45a"></i>' 
+              : `<input type="checkbox" class="checkin-checkbox" data-id="${r.id}" ${selectedRows.has(r.id) ? 'checked' : ''}>`
+            }
+          </td>
+          <td><strong>${safe(r.name)}</strong> ${r.checkedIn ? '<span class="badge checked-in">Checked In</span>' : ''}</td>
+          <td>
+            <div>${safe(r.email)}</div>
+            <div class="muted">${safe(r.phone)}</div>
+          </td>
+          <td>${safe(r.guests ?? "")}</td>
+          <td>${badge(r.attend)}</td>
+          <td style="max-width:420px">${safe(r.notes)}</td>
+          <td class="muted">${fmtDate(r.submittedAt)}</td>
+          <td>
+            <button class="btn danger delete-btn" data-id="${r.id}">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `
+          )
+          .join("");
+
+        // Add event listeners to delete buttons
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const id = e.currentTarget.getAttribute("data-id");
+            const record = allRows.find((r) => r.id === id);
+            if (record) {
+              showDeleteModal(record);
+            }
+          });
+        });
+
+        // Add event listeners to checkboxes
+        document.querySelectorAll(".checkin-checkbox").forEach((checkbox) => {
+          checkbox.addEventListener("change", (e) => {
+            const id = e.target.getAttribute("data-id");
+            if (e.target.checked) {
+              selectedRows.add(id);
+            } else {
+              selectedRows.delete(id);
+            }
+          });
+        });
+      }
+
+      // Show delete confirmation modal
+      function showDeleteModal(record) {
+        recordToDelete = record;
+        const modal = el("delete-modal");
+        modal.classList.add("visible");
+      }
+
+      // Hide delete confirmation modal
+      function hideDeleteModal() {
+        const modal = el("delete-modal");
+        modal.classList.remove("visible");
+        recordToDelete = null;
+      }
+
+      // Delete record from Firestore
+      async function deleteRecord() {
+        if (!recordToDelete) return;
+
+        try {
+          await db.collection("rsvps").doc(recordToDelete.id).delete();
+          showToast(`Record for ${recordToDelete.name} deleted successfully`);
+          hideDeleteModal();
+        } catch (error) {
+          console.error("Error deleting record:", error);
+          showToast("Error deleting record", "error");
+        }
+      }
+
+      // Check-in function for individual or bulk check-in
+      async function checkInAttendees(ids) {
+        if (!ids || ids.length === 0) {
+          showToast("No attendees selected for check-in", "warning");
+          return;
+        }
+
+        try {
+          const batch = db.batch();
+          const now = new Date();
+          
+          ids.forEach(id => {
+            const docRef = db.collection("rsvps").doc(id);
+            batch.update(docRef, {
+              checkedIn: true,
+              checkedInAt: now
+            });
+          });
+          
+          await batch.commit();
+          
+          // Clear selection after successful check-in
+          selectedRows.clear();
+          
+          showToast(`Checked in ${ids.length} attendee${ids.length > 1 ? 's' : ''} successfully`);
+        } catch (error) {
+          console.error("Error checking in attendees:", error);
+          showToast("Error checking in attendees", "error");
+        }
+      }
+
+      // Bulk check-in function
+      function bulkCheckIn() {
+        if (selectedRows.size === 0) {
+          showToast("Please select at least one attendee to check in", "warning");
+          return;
+        }
+        
+        checkInAttendees(Array.from(selectedRows));
+      }
+
+      // Excel export function
+      function exportExcel() {
+        if (!viewRows.length) {
+          showToast("No data to export yet.", "error");
+          return;
+        }
+
+        // Check if XLSX library is available
+        if (typeof XLSX === "undefined") {
+          showToast("Excel library not loaded. Please try again.", "error");
+          console.error("XLSX library is not defined");
+          return;
+        }
+
+        try {
+          // Prepare data for export
+          const data = viewRows.map((r) => ({
+            Name: r.name || "",
+            Email: r.email || "",
+            Phone: r.phone || "",
+            Guests: r.guests ?? "",
+            Status: r.attend || "",
+            'Checked In': r.checkedIn ? 'Yes' : 'No',
+            'Checked In At': r.checkedInAt 
+              ? (r.checkedInAt.toDate ? r.checkedInAt.toDate().toLocaleString() : r.checkedInAt) 
+              : '',
+            Notes: r.notes || "",
+            "Submitted At": r.submittedAt?.toDate
+              ? r.submittedAt.toDate().toLocaleString()
+              : r.submittedAt || "",
+          }));
+
+          // Create worksheet
+          const ws = XLSX.utils.json_to_sheet(data);
+
+          // Set column widths
+          const colWidths = [
+            { wch: 24 }, // Name
+            { wch: 30 }, // Email
+            { wch: 16 }, // Phone
+            { wch: 8 }, // Guests
+            { wch: 10 }, // Status
+            { wch: 12 }, // Checked In
+            { wch: 22 }, // Checked In At
+            { wch: 50 }, // Notes
+            { wch: 22 }, // Submitted At
+          ];
+          ws["!cols"] = colWidths;
+
+          // Create workbook
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "RSVPs");
+
+          // Generate filename with date
+          const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+          const filename = `rsvps_${stamp}.xlsx`;
+
+          // Export to Excel
+          XLSX.writeFile(wb, filename);
+
+          // Show success message
+          showToast(`Exported ${viewRows.length} records to ${filename}`);
+        } catch (error) {
+          console.error("Error exporting to Excel:", error);
+          showToast(
+            "Error exporting to Excel. Please check console for details.",
+            "error"
+          );
+        }
+      }
+
+      // Manual refresh (re-run query once)
+      async function refreshOnce() {
+        try {
+          const snap = await db
+            .collection("rsvps")
+            .orderBy("submittedAt", "desc")
+            .get();
+          allRows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          applyFilters();
+          showToast("Data refreshed successfully");
+        } catch (error) {
+          console.error("Error refreshing data:", error);
+          showToast("Error refreshing data", "error");
+        }
+      }
+
+      // Update recipient count for email
+      function updateRecipientCount() {
+        const attendees = allRows.filter(
+          (r) => r.attend && r.attend.toLowerCase() === "yes" && r.email
+        );
+        el(
+          "recipient-count"
+        ).textContent = `Will be sent to ${attendees.length} attendees`;
+      }
+
+      // Show email panel
+      function showEmailPanel() {
+        el("email-panel").style.display = "block";
+        updateEmailPreview();
+      }
+
+      // Hide email panel
+      function hideEmailPanel() {
+        el("email-panel").style.display = "none";
+        // Clear attachments when hiding the panel
+        emailAttachments = [];
+        el("attachment-list").innerHTML = "";
+      }
+
+      // Update email preview
+      function updateEmailPreview() {
+        const subject = el("email-subject").value;
+        const body = el("email-body").value;
+
+        // Replace [Name] with a sample name for preview
+        const previewBody = body.replace("[Name]", "Sample Attendee");
+
+        el(
+          "email-preview"
+        ).innerHTML = `<strong>Subject:</strong> ${subject}<br><br>${previewBody}`;
+      }
+
+      // Handle file attachments
+      function handleAttachments(e) {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        const attachmentList = el("attachment-list");
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+
+          // Check if file is already added
+          if (
+            emailAttachments.some(
+              (f) => f.name === file.name && f.size === file.size
+            )
+          ) {
+            continue;
+          }
+
+          emailAttachments.push(file);
+
+          const attachmentItem = document.createElement("div");
+          attachmentItem.className = "attachment-item";
+          attachmentItem.innerHTML = `
+            <div class="attachment-name">${file.name}</div>
+            <button class="remove-attachment" data-index="${
+              emailAttachments.length - 1
+            }">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          `;
+
+          attachmentList.appendChild(attachmentItem);
+        }
+
+        // Add event listeners to remove buttons
+        document.querySelectorAll(".remove-attachment").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const index = parseInt(e.currentTarget.getAttribute("data-index"));
+            emailAttachments.splice(index, 1);
+            renderAttachmentList();
+          });
+        });
+
+        // Clear the file input
+        e.target.value = "";
+      }
+
+      // Render the attachment list
+      function renderAttachmentList() {
+        const attachmentList = el("attachment-list");
+        attachmentList.innerHTML = "";
+
+        emailAttachments.forEach((file, index) => {
+          const attachmentItem = document.createElement("div");
+          attachmentItem.className = "attachment-item";
+          attachmentItem.innerHTML = `
+            <div class="attachment-name">${file.name}</div>
+            <button class="remove-attachment" data-index="${index}">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          `;
+
+          attachmentList.appendChild(attachmentItem);
+        });
+
+        // Add event listeners to remove buttons
+        document.querySelectorAll(".remove-attachment").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const index = parseInt(e.currentTarget.getAttribute("data-index"));
+            emailAttachments.splice(index, 1);
+            renderAttachmentList();
+          });
+        });
+      }
+
+      // Send emails to all attendees
+      async function sendEmails() {
+        const subject = el("email-subject").value;
+        const body = el("email-body").value;
+
+        // Get all attendees with email addresses
+        const attendees = allRows.filter(
+          (r) => r.attend && r.attend.toLowerCase() === "yes" && r.email
+        );
+
+        if (attendees.length === 0) {
+          showToast("No attendees with email addresses found", "warning");
+          return;
+        }
+
+        // Show confirmation modal
+        el(
+          "email-confirm-text"
+        ).textContent = `Are you sure you want to send this email to ${attendees.length} attendees?`;
+        el("email-confirm-modal").classList.add("visible");
+
+        // Store the email data for later use
+        window.pendingEmailData = { subject, body, attendees };
+      }
+
+      // Actually send the emails after confirmation
+      async function sendEmailsConfirmed() {
+        const { subject, body, attendees } = window.pendingEmailData;
+        delete window.pendingEmailData;
+
+        el("email-confirm-modal").classList.remove("visible");
+
+        // Show progress UI
+        el("email-progress").style.display = "block";
+        el("progress-bar").style.width = "0%";
+        el("progress-detail").textContent = `0/${attendees.length} emails sent`;
+
+        let successCount = 0;
+        let errorCount = 0;
+
+        // Show initial toast
+        showToast(
+          `Sending emails to ${attendees.length} recipients...`,
+          "warning"
+        );
+
+        // Prepare attachments if any
+        const attachmentPromises = emailAttachments.map((file) => {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              resolve({
+                name: file.name,
+                content: e.target.result.split(",")[1], // Remove data:application/octet-stream;base64, prefix
+                type: file.type,
+              });
+            };
+            reader.readAsDataURL(file);
+          });
+        });
+
+        const attachments = await Promise.all(attachmentPromises);
+
+        // Send emails one by one
+        for (let i = 0; i < attendees.length; i++) {
+          const attendee = attendees[i];
+
+          try {
+            // Personalize the email for each recipient
+            const personalizedBody = body.replace(
+              "[Name]",
+              attendee.name || "Guest"
+            );
+
+            // Prepare email parameters
+            const templateParams = {
+              to_email: attendee.email,
+              to_name: attendee.name,
+              subject: subject,
+              message: personalizedBody,
+              attachments: attachments,
+            };
+
+            // Send email using EmailJS
+            await emailjs.send(
+              "service_r4m5dxe", // Replace with your EmailJS service ID
+              "template_nst54u2", // Replace with your EmailJS template ID
+              templateParams
+            );
+
+            successCount++;
+          } catch (error) {
+            console.error(`Failed to send email to ${attendee.email}:`, error);
+            errorCount++;
+          }
+
+          // Update progress
+          const progress = Math.round(((i + 1) / attendees.length) * 100);
+          el("progress-bar").style.width = `${progress}%`;
+          el("progress-detail").textContent = `${i + 1}/${
+            attendees.length
+          } emails sent`;
+        }
+
+        // Hide progress UI
+        el("email-progress").style.display = "none";
+
+        // Show results
+        if (errorCount === 0) {
+          showToast(`Successfully sent ${successCount} emails`, "success");
+        } else {
+          showToast(
+            `Sent ${successCount} emails, ${errorCount} failed`,
+            "error"
+          );
+        }
+
+        // Hide email panel
+        hideEmailPanel();
+      }
+
+      // === INIT ===
+      // Check if XLSX library loaded
+      function checkXLSX() {
+        if (typeof XLSX === "undefined") {
+          console.error("XLSX library failed to load");
+          showToast("Excel export functionality not available", "error");
+          el("export-btn").disabled = true;
+          el("export-btn").innerHTML =
+            '<i class="fa-solid fa-triangle-exclamation"></i> Export Unavailable';
+        }
+      }
+
+      // Set up live updates
+      try {
+        db.collection("rsvps")
+          .orderBy("submittedAt", "desc")
+          .onSnapshot(
+            (snap) => {
+              allRows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+              applyFilters();
+            },
+            (err) => {
+              console.error("onSnapshot error:", err);
+              showToast(
+                "Live updates disabled. Using manual refresh.",
+                "error"
+              );
+              // fallback to one-time load
+              refreshOnce();
+            }
+          );
+      } catch (error) {
+        console.error("Firebase connection error:", error);
+        showToast("Database connection error", "error");
+      }
+
+      // UI hooks
+      el("q").addEventListener("input", applyFilters);
+      el("status").addEventListener("change", applyFilters);
+      el("checkin-filter").addEventListener("change", applyFilters);
+      el("export-btn").addEventListener("click", exportExcel);
+      el("refresh-btn").addEventListener("click", refreshOnce);
+      el("email-btn").addEventListener("click", showEmailPanel);
+      el("cancel-email").addEventListener("click", hideEmailPanel);
+      el("send-email").addEventListener("click", sendEmails);
+      el("email-subject").addEventListener("input", updateEmailPreview);
+      el("email-body").addEventListener("input", updateEmailPreview);
+      el("email-attachments").addEventListener("change", handleAttachments);
+      el("checkin-bulk-btn").addEventListener("click", bulkCheckIn);
+
+      // Delete modal handlers
+      el("cancel-delete").addEventListener("click", hideDeleteModal);
+      el("confirm-delete").addEventListener("click", deleteRecord);
+
+      // Email confirmation handlers
+      el("cancel-email-send").addEventListener("click", () => {
+        el("email-confirm-modal").classList.remove("visible");
+      });
+      el("confirm-email-send").addEventListener("click", sendEmailsConfirmed);
+
+      // Close modals when clicking outside
+      el("delete-modal").addEventListener("click", (e) => {
+        if (e.target === el("delete-modal")) {
+          hideDeleteModal();
+        }
+      });
+      el("email-confirm-modal").addEventListener("click", (e) => {
+        if (e.target === el("email-confirm-modal")) {
+          el("email-confirm-modal").classList.remove("visible");
+        }
+      });
+
+      // Check if XLSX library loaded after page fully loads
+      window.addEventListener("load", checkXLSX);
+
+      // Also check after a delay in case the library loads slowly
+      setTimeout(checkXLSX, 2000);
+    </script>
+    <script>
+      // === PDF EXPORT ===
+      function exportPDF() {
+        try {
+          if (!viewRows.length) {
+            showToast("No data to export yet.", "error");
+            return;
+          }
+          if (
+            !window.jspdf ||
+            !window.jspdf.jsPDF ||
+            !window.jspdf.jsPDF.prototype.autoTable
+          ) {
+            showToast("PDF libraries not loaded. Please try again.", "error");
+            console.error("jsPDF / AutoTable not available");
+            return;
+          }
+
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "pt",
+            format: "a4",
+          });
+
+          // ---- Header (Title + date + filters) ----
+          const now = new Date();
+          const stamp = now.toLocaleString();
+          const q = el("q").value.trim();
+          const s = el("status").value;
+          const filterLine = [
+            q ? `Search: "${q}"` : null,
+            s ? `Status: ${s}` : null,
+          ]
+            .filter(Boolean)
+            .join("  |  ");
+
+          const totals = viewRows.reduce(
+            (acc, r) => {
+              acc.total++;
+              const a = (r.attend || "").toLowerCase();
+              if (a === "yes") acc.yes++;
+              else if (a === "maybe") acc.maybe++;
+              else if (a === "no") acc.no++;
+              
+              // Count checked-in attendees
+              if (r.checkedIn) {
+                acc.checkedIn++;
+              }
+              
+              return acc;
+            },
+            { total: 0, yes: 0, maybe: 0, no: 0, checkedIn: 0 }
+          );
+
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(20);
+          doc.text("RSVP Submissions — Admin Export", 40, 40);
+
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(10);
+          doc.text(`Generated: ${stamp}`, 40, 58);
+          if (filterLine) doc.text(filterLine, 40, 72);
+
+          // KPI line
+          doc.setFontSize(11);
+          doc.text(
+            `Total: ${totals.total}   |   Yes: ${totals.yes}   |   Maybe: ${totals.maybe}   |   No: ${totals.no}   |   Checked In: ${totals.checkedIn}`,
+            40,
+            90
+          );
+
+          // ---- Table data ----
+          const rows = viewRows.map((r) => ({
+            Name: r.name || "",
+            Email: r.email || "",
+            Phone: r.phone || "",
+            Guests: r.guests ?? "",
+            Status: r.attend || "",
+            'Checked In': r.checkedIn ? 'Yes' : 'No',
+            'Checked In At': r.checkedInAt 
+              ? (r.checkedInAt.toDate ? r.checkedInAt.toDate().toLocaleString() : r.checkedInAt) 
+              : '',
+            Notes: (r.notes || "").toString(),
+            SubmittedAt: r.submittedAt?.toDate
+              ? r.submittedAt.toDate().toLocaleString()
+              : r.submittedAt || "",
+          }));
+
+          // ---- AutoTable ----
+          doc.autoTable({
+            startY: 110,
+            styles: { fontSize: 9, cellPadding: 6, overflow: "linebreak" },
+            headStyles: {
+              fillColor: [20, 23, 33],
+              textColor: 255,
+              halign: "left",
+            },
+            bodyStyles: { valign: "top" },
+            columns: [
+              { header: "Name", dataKey: "Name" },
+              { header: "Email", dataKey: "Email" },
+              { header: "Phone", dataKey: "Phone" },
+              { header: "Guests", dataKey: "Guests" },
+              { header: "Status", dataKey: "Status" },
+              { header: "Checked In", dataKey: "Checked In" },
+              { header: "Checked In At", dataKey: "Checked In At" },
+              { header: "Notes", dataKey: "Notes" },
+              { header: "Submitted", dataKey: "SubmittedAt" },
+            ],
+            columnStyles: {
+              Name: { cellWidth: 150 },
+              Email: { cellWidth: 200 },
+              Phone: { cellWidth: 110 },
+              Guests: { cellWidth: 70 },
+              Status: { cellWidth: 80 },
+              'Checked In': { cellWidth: 90 },
+              'Checked In At': { cellWidth: 150 },
+              Notes: { cellWidth: 280 }, // let notes wrap
+              SubmittedAt: { cellWidth: 150 },
+            },
+            body: rows,
+            didDrawPage: (data) => {
+              // Footer with page numbers
+              const pageCount = doc.getNumberOfPages();
+              doc.setFontSize(9);
+              doc.setTextColor(120);
+              doc.text(
+                `Page ${data.pageNumber} of ${pageCount}`,
+                doc.internal.pageSize.getWidth() - 80,
+                doc.internal.pageSize.getHeight() - 20
+              );
+            },
+            margin: { top: 110, left: 40, right: 40, bottom: 40 },
+          });
+
+          const fileStamp = new Date()
+            .toISOString()
+            .slice(0, 10)
+            .replace(/-/g, "");
+          const filename = `rsvps_${fileStamp}.pdf`;
+          doc.save(filename);
+          showToast(`Exported ${viewRows.length} records to ${filename}`);
+        } catch (err) {
+          console.error("PDF export error:", err);
+          showToast(
+            "Error exporting to PDF. Check console for details.",
+            "error"
+          );
+        }
+      }
+
+      // Hook up the button
+      document.addEventListener("DOMContentLoaded", () => {
+        const pdfBtn = document.getElementById("export-pdf-btn");
+        if (pdfBtn) pdfBtn.addEventListener("click", exportPDF);
+      });
+    </script>
+  </body>
+</html>
