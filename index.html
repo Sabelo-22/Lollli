@@ -1099,12 +1099,9 @@
             RSVP
           </h2>
           <p style="color: var(--muted); margin-bottom: 14px">
-            Kindly confirm your attendance by RSVP. This invitation is
-            exclusively yours and may not be transferred. To help you step into
-            the evening with intention, a tailored style guide and the theme of
-            the night will be shared with you in the days ahead.
+            Sorry RSVP IS OFFICIALY CLOSED
           </p>
-          <form id="rsvp-form">
+          <!-- <form id="rsvp-form">
             <div>
               <label for="name">Full Name</label>
               <input
@@ -1130,7 +1127,7 @@
               <input id="phone" name="phone" type="tel" placeholder="+27 …" />
             </div>
             <!-- Guests is intentionally commented out -->
-            <div>
+            <!-- <div>
               <label for="attend">Will you attend?</label>
               <select id="attend" name="attend" required>
                 <option value="Yes">Yes</option>
@@ -1146,13 +1143,13 @@
                 rows="4"
                 placeholder="Anything we should know?"
               ></textarea>
-            </div>
+            </div> -->
             <div
               style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px"
             >
-              <button class="btn btn-primary" type="submit">
+              <!-- <button class="btn btn-primary" type="submit">
                 <i class="fa-regular fa-paper-plane"></i> Submit RSVP
-              </button>
+              </button> -->
               <!-- <a class="btn btn-ghost" id="calendar-link" href="#" target="_blank">
                 <i class="fa-regular fa-calendar-plus"></i> Add to Calendar
               </a> -->
@@ -1161,7 +1158,7 @@
               id="rsvp-status"
               style="margin-top: 8px; color: var(--muted)"
             ></p>
-          </form>
+          </form> -->
         </div>
 
         <div class="card">
@@ -1355,7 +1352,7 @@ END:VCALENDAR`;
         });
       }
 
-      // ---- RSVP + EmailJS ----
+      // ---- RSVP + EmailJS ----for===
       const form = document.getElementById("rsvp-form");
       const statusEl = document.getElementById("rsvp-status");
       if (form && statusEl) {
